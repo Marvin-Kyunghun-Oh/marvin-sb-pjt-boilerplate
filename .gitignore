@@ -1,0 +1,43 @@
+### Spring Boot & Build Tools ###
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+out/
+bin/
+
+### 환경 설정 및 보안 (가장 중요) ###
+# 로컬 개발용 설정 파일
+src/main/resources/application-local.yml
+src/main/resources/application-local.properties
+# 민감한 키 파일
+*.jks
+*.p12
+*.key
+
+### IDE 관련 ###
+# IntelliJ
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# VS Code
+.vscode/
+
+### OS & Logs ###
+.DS_Store
+Thumbs.db
+*.log
+logs/
+
+### Etc ###
+HELP.md
