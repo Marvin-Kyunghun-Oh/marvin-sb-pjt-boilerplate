@@ -8,7 +8,7 @@
 ## 🛠 Tech Stack
 
 * **Language:** Java 17
-* **Framework:** Spring Boot 4.0.5
+* **Framework:** Spring Boot 3.5.13
 * **Build Tool:** Gradle (Wrapper 포함)
 * **Database:** H2 (Runtime), MyBatis
 * **Logging:** Log4j2 (Log4jdbc 포함)
