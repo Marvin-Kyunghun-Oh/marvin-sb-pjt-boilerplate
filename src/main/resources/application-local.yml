@@ -1,0 +1,48 @@
+# ===================================================================
+# Local Development Profile
+# 이 설정은 개발자 개인 PC 환경에서만 적용됩니다.
+# ===================================================================
+
+spring:
+  config:
+    activate:
+      # 로컬 profile 식별자 설정 (local/dev/stg/prod)
+      on-profile: local
+
+  # Database Connection
+  datasource:
+    hikari:
+      driver-class-name: org.h2.Driver
+      jdbc-url: jdbc:h2:mem:boilerdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE
+      username: ENC(8TAZSwUHur1E+5876zY1sQ==)
+      password: ENC(uuLWXjM6J0+HoDO2TgLExsFMjc88Pt7r)
+
+  # H2 Console 설정
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        trace: false
+        web-allow-others: false
+
+  sql:
+    init:
+      schema-locations: classpath:init-data/schema.sql
+      data-locations: classpath:init-data/data.sql
+      username: ENC(8TAZSwUHur1E+5876zY1sQ==)
+      password: ENC(uuLWXjM6J0+HoDO2TgLExsFMjc88Pt7r)
+      mode: always
+      encoding: UTF-8
+
+jasypt:
+  encryptor:
+    bean: jasyptEncryptor
+    password: ${ENCRYPTION_PASSWORD}
+
+logging:
+  level:
+    root: INFO
+    # HikariCP의 상태 로그를 디버그 레벨로 출력합니다.
+    com.zaxxer.hikari: DEBUG
+    com.zaxxer.hikari.HikariConfig: DEBUG

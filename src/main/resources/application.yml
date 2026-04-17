@@ -57,3 +57,20 @@ spring:
     # 항상 한국 시간(KST)을 기준으로 삼습니다.
     # (DB나 서버 설정과 무관)
     time-zone: Asia/Seoul
+
+  datasource:
+    # hikariCP 설정
+    hikari:
+      pool-name: marvin-pool
+
+      # 풀에 유지할 최대 커넥션 수
+      # (기본값: 10)
+      maximum-pool-size: 10
+
+      # 커넥션 풀에 연결을 요청할 때 대기할 최대 시간
+      # (기본값: 30초)
+      minimum-idle: 10
+
+      # 커넥션이 유휴 상태로 풀에 남아있을 수 있는 최대 시간
+      # (기본값: 10분)
+      connection-timeout: 10000
