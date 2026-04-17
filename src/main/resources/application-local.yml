@@ -17,6 +17,15 @@ spring:
       username: ENC(8TAZSwUHur1E+5876zY1sQ==)
       password: ENC(uuLWXjM6J0+HoDO2TgLExsFMjc88Pt7r)
 
+  # JPA 설정
+  jpa:
+    hibernate:
+      ddl-auto: none # (create, create-drop, update, validate, none)
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        show_sql: false # SQL 출력은 로깅 레벨에서 관리 (DEBUG)
+
   # H2 Console 설정
   h2:
     console:
@@ -43,6 +52,10 @@ jasypt:
 logging:
   level:
     root: INFO
-    # HikariCP의 상태 로그를 디버그 레벨로 출력합니다.
+    # HikariCP 로깅 설정
     com.zaxxer.hikari: DEBUG
     com.zaxxer.hikari.HikariConfig: DEBUG
+    # JPA 로깅 설정
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE # 쿼리 파라미터 출력 (Hibernate 6)
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE # Hibernate 5 하위 호환

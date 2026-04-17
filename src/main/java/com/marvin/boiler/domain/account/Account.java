@@ -1,0 +1,51 @@
+package com.marvin.boiler.domain.account;
+
+import com.marvin.boiler.domain.account.code.Status;
+import com.marvin.boiler.global.entity.BaseTimeEntity;
+import jakarta.persistence.*;
+import lombok.*;
+
+/**
+ * 회원 Entity
+ */
+
+@Entity
+@Table(name = "account")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // JPA 기본 생성자 안전성 확보
+@AllArgsConstructor
+@Builder
+@ToString(callSuper = true) // 상위 클래스 필드도 toString에 포함
+public class Account extends BaseTimeEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long accountId; // 회원ID
+
+    @Column(nullable = false, length = 100)
+    private String name; // 회원이름
+
+    @Column(nullable = false)
+    private Status status; // 상태 (StatusConverter autoApply 적용)
+
+    @Column(unique = true, nullable = false, length = 150)
+    private String email;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean vipYn = false; // 기본값 설정
+
+    // === 비즈니스 메서드 ===
+    public void changeStatus(Status status) {
+        this.status = status;
+    }
+
+    public void updateVipStatus(boolean vipYn) {
+        this.vipYn = vipYn;
+    }
+
+    public void updateProfile(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+}

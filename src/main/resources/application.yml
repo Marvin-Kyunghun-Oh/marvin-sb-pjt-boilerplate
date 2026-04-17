@@ -58,6 +58,15 @@ spring:
     # (DB나 서버 설정과 무관)
     time-zone: Asia/Seoul
 
+  # Global JPA 설정
+  jpa:
+    open-in-view: false  # OSIV 비활성화 (권장)
+    properties:
+      hibernate:
+        format_sql: true # SQL 가독성을 위한 포맷팅
+        jdbc:
+          batch_size: 50 # 벌크 insert/update 성능 최적화
+
   datasource:
     # hikariCP 설정
     hikari:
