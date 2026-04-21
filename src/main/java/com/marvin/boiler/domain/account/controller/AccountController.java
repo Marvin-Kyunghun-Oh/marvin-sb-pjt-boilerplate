@@ -2,6 +2,8 @@ package com.marvin.boiler.domain.account.controller;
 
 import com.marvin.boiler.domain.account.dto.AccountApiDto;
 import com.marvin.boiler.domain.account.service.AccountService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,7 +23,7 @@ public class AccountController {
      * @param request
      */
     @PostMapping
-    public ResponseEntity<?> createAccount(@RequestBody AccountApiDto.CreateRequest request) {
+    public ResponseEntity<?> createAccount(@Valid @RequestBody AccountApiDto.CreateRequest request) {
         AccountApiDto.CreateResponse response = null;
         try {
             response = accountService.createAccount(request);
@@ -29,7 +31,6 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(e.getMessage());
         }
-
 
         return ResponseEntity.ok(response);
     }
@@ -41,7 +42,7 @@ public class AccountController {
      * @return
      */
     @PatchMapping("/{accountId}")
-    public ResponseEntity<?> updateAccount(@PathVariable Long accountId,
+    public ResponseEntity<?> updateAccount(@Valid @PathVariable @Min(1L) Long accountId,
                                            @RequestBody AccountApiDto.UpdateRequest request) {
         try {
             accountService.updateAccount(accountId, request);
@@ -68,7 +69,7 @@ public class AccountController {
      * @return
      */
     @GetMapping("/{accountId}")
-    public ResponseEntity<?> getAccount(@PathVariable Long accountId) {
+    public ResponseEntity<?> getAccount(@Valid @PathVariable @Min(1L) Long accountId) {
 
         AccountApiDto.GetResponse account = null;
 

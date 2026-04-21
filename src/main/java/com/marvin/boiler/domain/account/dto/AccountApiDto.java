@@ -2,6 +2,9 @@ package com.marvin.boiler.domain.account.dto;
 
 import com.marvin.boiler.domain.account.Account;
 import com.marvin.boiler.domain.account.code.Status;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -84,8 +87,11 @@ public class AccountApiDto {
      * 회원 등록 요청 (POST /accounts)
      */
     public record CreateRequest(
+            @NotBlank
             String name,
+            @NotBlank @Email
             String email,
+            @NotNull
             Status status
     ) {
         public Account toEntity() {
@@ -113,6 +119,7 @@ public class AccountApiDto {
      */
     public record UpdateRequest(
             String name,
+            @Email
             String email,
             Status status,
             Boolean vipYn
