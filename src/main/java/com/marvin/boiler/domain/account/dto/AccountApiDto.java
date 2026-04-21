@@ -58,7 +58,7 @@ public class AccountApiDto {
     /**
      * 회원 단건 상세 조회 응답 (GET /accounts/{id})
      */
-    public record DetailResponse(
+    public record GetResponse(
             Long accountId,
             String name,
             String email,
@@ -67,8 +67,8 @@ public class AccountApiDto {
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
-        public static DetailResponse from(Account account) {
-            return new DetailResponse(
+        public static GetResponse from(Account account) {
+            return new GetResponse(
                     account.getAccountId(),
                     account.getName(),
                     account.getEmail(),
@@ -95,6 +95,17 @@ public class AccountApiDto {
                     .status(this.status)
                     .build();
         }
+    }
+
+    /**
+     * 회원 등록 응답 (POST /accounts)
+     */
+    public record CreateResponse(
+            Long accountId
+    ) {
+      public static CreateResponse from(Account account) {
+          return new CreateResponse(account.getAccountId());
+      }
     }
 
     /**

@@ -4,9 +4,9 @@ import com.marvin.boiler.domain.account.dto.AccountApiDto;
 import com.marvin.boiler.domain.account.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/accounts")
@@ -17,12 +17,69 @@ public class AccountController {
     private final AccountService accountService;
 
     /**
+     * 회원 가입
+     * @param request
+     */
+    @PostMapping
+    public ResponseEntity<?> createAccount(@RequestBody AccountApiDto.CreateRequest request) {
+        AccountApiDto.CreateResponse response = null;
+        try {
+            response = accountService.createAccount(request);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 회원정보 수정
+     * @param accountId
+     * @param request
+     * @return
+     */
+    @PatchMapping("/{accountId}")
+    public ResponseEntity<?> updateAccount(@PathVariable Long accountId,
+                                           @RequestBody AccountApiDto.UpdateRequest request) {
+        try {
+            accountService.updateAccount(accountId, request);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+        return ResponseEntity.ok("정상적으로 수정되었습니다.");
+    }
+
+    /**
      * 회원 목록 조회
      * @return
      */
     @GetMapping
-    public AccountApiDto.ListResponse getAccounts() {
-        return accountService.getAccounts();
+    public ResponseEntity<?> getAccounts() {
+        AccountApiDto.ListResponse list = accountService.getAccounts();
+        return ResponseEntity.ok(list);
+    }
+
+    /**
+     * 회원 상세 조회
+     * @param accountId
+     * @return
+     */
+    @GetMapping("/{accountId}")
+    public ResponseEntity<?> getAccount(@PathVariable Long accountId) {
+
+        AccountApiDto.GetResponse account = null;
+
+        try {
+            account = accountService.getAccount(accountId);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+
+        return ResponseEntity.ok(account);
     }
 
 }
