@@ -4,6 +4,7 @@ import com.marvin.boiler.domain.account.code.Status;
 import com.marvin.boiler.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.util.StringUtils;
 
 /**
  * 회원 Entity
@@ -44,8 +45,15 @@ public class Account extends BaseTimeEntity {
         this.vipYn = vipYn;
     }
 
-    public void updateProfile(String name, String email) {
-        this.name = name;
-        this.email = email;
+    public void updateName(String name) {
+        if (StringUtils.hasText(name)) {
+            this.name = name;
+        }
+    }
+
+    public void updateEmail(String email) {
+        if (StringUtils.hasText(email)) {
+            this.email = email;
+        }
     }
 }

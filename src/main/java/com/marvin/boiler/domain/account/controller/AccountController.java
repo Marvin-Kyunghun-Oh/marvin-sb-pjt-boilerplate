@@ -43,7 +43,7 @@ public class AccountController {
      */
     @PatchMapping("/{accountId}")
     public ResponseEntity<?> updateAccount(@Valid @PathVariable @Min(1L) Long accountId,
-                                           @RequestBody AccountApiDto.UpdateRequest request) {
+                                           @Valid @RequestBody AccountApiDto.UpdateRequest request) {
         try {
             accountService.updateAccount(accountId, request);
         } catch (RuntimeException e) {

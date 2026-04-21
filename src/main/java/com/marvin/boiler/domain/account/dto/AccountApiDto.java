@@ -1,6 +1,5 @@
 package com.marvin.boiler.domain.account.dto;
 
-import com.marvin.boiler.domain.account.Account;
 import com.marvin.boiler.domain.account.code.Status;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -27,15 +26,7 @@ public class AccountApiDto {
      */
     public record ListResponse(
             List<Summary> accounts
-    ) {
-        public static ListResponse from(List<Account> accounts) {
-            return new ListResponse(
-                    accounts.stream()
-                            .map(Summary::from)
-                            .toList()
-            );
-        }
-    }
+    ) {}
 
     /**
      * 목록 내 개별 회원 요약 정보
@@ -46,17 +37,7 @@ public class AccountApiDto {
             String email,
             Status status,
             LocalDateTime createdAt
-    ) {
-        public static Summary from(Account account) {
-            return new Summary(
-                    account.getAccountId(),
-                    account.getName(),
-                    account.getEmail(),
-                    account.getStatus(),
-                    account.getCreatedAt()
-            );
-        }
-    }
+    ) {}
 
     /**
      * 회원 단건 상세 조회 응답 (GET /accounts/{id})
@@ -69,19 +50,7 @@ public class AccountApiDto {
             Boolean vipYn,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
-    ) {
-        public static GetResponse from(Account account) {
-            return new GetResponse(
-                    account.getAccountId(),
-                    account.getName(),
-                    account.getEmail(),
-                    account.getStatus(),
-                    account.getVipYn(),
-                    account.getCreatedAt(),
-                    account.getUpdatedAt()
-            );
-        }
-    }
+    ) {}
 
     /**
      * 회원 등록 요청 (POST /accounts)
@@ -93,26 +62,14 @@ public class AccountApiDto {
             String email,
             @NotNull
             Status status
-    ) {
-        public Account toEntity() {
-            return Account.builder()
-                    .name(this.name)
-                    .email(this.email)
-                    .status(this.status)
-                    .build();
-        }
-    }
+    ) {}
 
     /**
      * 회원 등록 응답 (POST /accounts)
      */
     public record CreateResponse(
             Long accountId
-    ) {
-      public static CreateResponse from(Account account) {
-          return new CreateResponse(account.getAccountId());
-      }
-    }
+    ) {}
 
     /**
      * 회원 정보 수정 요청 (PATCH /accounts/{id})
@@ -123,6 +80,5 @@ public class AccountApiDto {
             String email,
             Status status,
             Boolean vipYn
-    ) {
-    }
+    ) {}
 }
