@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,9 +59,10 @@ public class AccountController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<?> getAccounts() {
-        AccountApiDto.ListResponse list = accountService.getAccounts();
-        return ResponseEntity.ok(list);
+    public ResponseEntity<AccountApiDto.ListResponse> getAccounts(
+            @org.springframework.data.web.PageableDefault(page = 0, size = 10, sort = "accountId", direction = org.springframework.data.domain.Sort.Direction.DESC)
+            org.springframework.data.domain.Pageable pageable) {
+        return ResponseEntity.ok(accountService.getAccounts(pageable));
     }
 
     /**

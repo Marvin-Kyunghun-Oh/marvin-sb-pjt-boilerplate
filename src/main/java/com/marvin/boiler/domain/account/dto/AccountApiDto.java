@@ -1,6 +1,7 @@
 package com.marvin.boiler.domain.account.dto;
 
 import com.marvin.boiler.domain.account.code.Status;
+import com.marvin.boiler.global.dto.PageResponse;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +9,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * 회원(Account) 관련 API 요청/응답 규격을 관리하는 DTO
@@ -20,12 +20,14 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AccountApiDto {
 
+
+
     /**
      * 회원 목록 조회 응답 (GET /accounts)
      * 페이징 정보가 추가될 것을 대비하여 Wrapper 객체로 구성합니다.
      */
     public record ListResponse(
-            List<Summary> accounts
+            PageResponse<Summary> page
     ) {}
 
     /**

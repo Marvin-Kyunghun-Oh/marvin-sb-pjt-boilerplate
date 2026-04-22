@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.util.StringUtils;
 
+import java.util.Objects;
+
 /**
  * 회원 Entity
  */
@@ -38,11 +40,15 @@ public class Account extends BaseTimeEntity {
 
     // === 비즈니스 메서드 ===
     public void changeStatus(Status status) {
-        this.status = status;
+        if (Objects.nonNull(status)) {
+            this.status = status;
+        }
     }
 
-    public void updateVipStatus(boolean vipYn) {
-        this.vipYn = vipYn;
+    public void updateVipStatus(Boolean vipYn) {
+        if (Objects.nonNull(vipYn)) {
+            this.vipYn = vipYn;
+        }
     }
 
     public void updateName(String name) {

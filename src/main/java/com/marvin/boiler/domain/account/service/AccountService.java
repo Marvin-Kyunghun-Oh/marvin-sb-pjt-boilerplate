@@ -6,11 +6,11 @@ import com.marvin.boiler.domain.account.mapper.AccountMapper;
 import com.marvin.boiler.domain.account.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -57,8 +57,8 @@ public class AccountService {
      * @return
      */
     @Transactional(readOnly = true)
-    public AccountApiDto.ListResponse getAccounts() throws RuntimeException {
-        return accountMapper.toListResponse(accountRepository.findAll());
+    public AccountApiDto.ListResponse getAccounts(Pageable pageable) throws RuntimeException {
+        return accountMapper.toListResponse(accountRepository.findAll(pageable));
     }
 
     /**
