@@ -1,6 +1,9 @@
 package com.marvin.boiler.global.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.marvin.boiler.global.exception.BizException;
+import com.marvin.boiler.global.exception.ErrorCode;
+import com.marvin.boiler.global.exception.ExceptionDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 
@@ -18,7 +21,7 @@ public record BaseResponse<T>(
         HttpStatus httpStatus,
         boolean success,
         @Nullable T data,
-        @Nullable Exception error
+        @Nullable ExceptionDto error
 ) {
 
     public static <T> BaseResponse<T> ok(@Nullable final T data) {
@@ -31,6 +34,14 @@ public record BaseResponse<T>(
 
     public static <T> BaseResponse<T> noContent() {
         return new BaseResponse<>(HttpStatus.NO_CONTENT, true, null, null);
+    }
+
+    public static <T> BaseResponse<T> fail(final BizException e) {
+        return new BaseResponse<>(e.getErrorCode().getHttpStatus(), false, null, ExceptionDto.of(e.getErrorCode()));
+    }
+
+    public static <T> BaseResponse<T> fail(final ErrorCode errorCode, final ExceptionDto exceptionDto) {
+        return new BaseResponse<>(errorCode.getHttpStatus(), false, null, exceptionDto);
     }
 
 }

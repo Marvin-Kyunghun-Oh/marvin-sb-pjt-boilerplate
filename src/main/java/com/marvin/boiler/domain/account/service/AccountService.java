@@ -4,6 +4,8 @@ import com.marvin.boiler.domain.account.Account;
 import com.marvin.boiler.domain.account.dto.AccountApiDto;
 import com.marvin.boiler.domain.account.mapper.AccountMapper;
 import com.marvin.boiler.domain.account.repository.AccountRepository;
+import com.marvin.boiler.global.exception.BizException;
+import com.marvin.boiler.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +29,7 @@ public class AccountService {
      * @param request
      */
     @Transactional
-    public AccountApiDto.CreateResponse createAccount(AccountApiDto.CreateRequest request) throws RuntimeException {
+    public AccountApiDto.CreateResponse createAccount(AccountApiDto.CreateRequest request) {
         Account createAccount = accountRepository.save(accountMapper.toEntity(request));
         return accountMapper.toCreateResponse(createAccount);
     }
@@ -39,9 +41,9 @@ public class AccountService {
      * @throws RuntimeException
      */
     @Transactional
-    public void updateAccount(Long accountId, AccountApiDto.UpdateRequest request) throws RuntimeException {
+    public void updateAccount(Long accountId, AccountApiDto.UpdateRequest request) {
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new BizException(ErrorCode.ACCOUNT_NOT_FOUND));
 
         // 회원 정보 변경
         account.updateName(request.name());
@@ -57,7 +59,7 @@ public class AccountService {
      * @return
      */
     @Transactional(readOnly = true)
-    public AccountApiDto.ListResponse getAccounts(Pageable pageable) throws RuntimeException {
+    public AccountApiDto.ListResponse getAccounts(Pageable pageable) {
         return accountMapper.toListResponse(accountRepository.findAll(pageable));
     }
 
@@ -67,10 +69,10 @@ public class AccountService {
      * @return
      */
     @Transactional(readOnly = true)
-    public AccountApiDto.GetResponse getAccount(Long accountId) throws RuntimeException {
+    public AccountApiDto.GetResponse getAccount(Long accountId) {
         return accountMapper.toDetailResponse(
                 accountRepository.findById(accountId)
-                                .orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다.")));
+                                .orElseThrow(() -> new BizException(ErrorCode.ACCOUNT_NOT_FOUND)));
     }
 
 }
