@@ -1,7 +1,9 @@
 package com.marvin.boiler.domain.account.controller;
 
+import com.marvin.boiler.domain.account.code.Status;
 import com.marvin.boiler.domain.account.dto.AccountApiDto;
 import com.marvin.boiler.domain.account.service.AccountService;
+import com.marvin.boiler.global.code.EnumMapper;
 import com.marvin.boiler.global.dto.BaseResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -55,5 +57,4 @@ public class AccountController {
     public BaseResponse<AccountApiDto.GetResponse> getAccount(@PathVariable @Min(1L) Long accountId) {
         return BaseResponse.ok(accountService.getAccount(accountId));
     }
-
 }

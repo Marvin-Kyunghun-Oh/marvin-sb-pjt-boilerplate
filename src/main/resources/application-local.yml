@@ -52,6 +52,7 @@ jasypt:
 logging:
   level:
     root: INFO
+    com.marvin.boiler: DEBUG
     # HikariCP 로깅 설정
     com.zaxxer.hikari: DEBUG
     com.zaxxer.hikari.HikariConfig: DEBUG
