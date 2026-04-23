@@ -1,5 +1,4 @@
 
-
 server:
   # App port
   port: 8080
@@ -83,3 +82,21 @@ spring:
       # 커넥션이 유휴 상태로 풀에 남아있을 수 있는 최대 시간
       # (기본값: 10분)
       connection-timeout: 10000
+
+# ===================================================================
+# SpringDoc (Swagger) 설정
+# ===================================================================
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    path: /swagger-ui.html           # Swagger 접속 경로
+    disable-swagger-default-url: true # 기본 Swagger URL 비활성화
+    display-request-duration: true   # 실행 시간 표시
+    operations-sorter: method        # HTTP Method 순으로 정렬
+    groups-order: DESC               # 그룹 순서 설정
+    tags-sorter: alpha               # 태그(도메인) 가나다 순 정렬
+  api-docs:
+    path: /api-docs                  # OpenAPI Spec 경로
+  cache:
+    disabled: true                   # 개발 시 캐시 비활성화 (변경 즉시 반영)

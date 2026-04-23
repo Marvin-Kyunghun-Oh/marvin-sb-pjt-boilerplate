@@ -1,6 +1,7 @@
 package com.marvin.boiler.global.exception;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
@@ -10,10 +11,14 @@ import java.util.stream.Collectors;
 /**
  * 에러 응답 상세 규격
  */
+@Schema(description = "에러 응답 상세 규격")
 public record ExceptionDto(
+        @Schema(description = "에러 코드 (예: C001, A001)", example = "C001")
         String code,
+        @Schema(description = "에러 메시지", example = "잘못된 요청입니다.")
         String message,
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        @Schema(description = "필드별 에러 상세 목록 (유효성 검증 실패 시에만 포함)")
         List<FieldError> errors
 ) {
     /**
@@ -53,9 +58,13 @@ public record ExceptionDto(
     /**
      * 필드별 에러 상세 정보
      */
+    @Schema(description = "필드별 에러 상세 정보")
     public record FieldError(
+            @Schema(description = "필드명", example = "email")
             String field,
+            @Schema(description = "입력된 값", example = "invalid-email")
             String value,
+            @Schema(description = "에러 사유", example = "이메일 형식이 올바르지 않습니다.")
             String reason
     ) {
         public static List<FieldError> from(BindingResult bindingResult) {

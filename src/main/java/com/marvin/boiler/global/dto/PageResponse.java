@@ -1,5 +1,6 @@
 package com.marvin.boiler.global.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -10,10 +11,15 @@ import java.util.List;
  */
 public record PageResponse<T>(
         List<T> content,
+        @Schema(description = "현재 페이지", example = "1")
         int pageNumber,
+        @Schema(description = "페이지 당 컨텐츠 수", example = "10")
         int pageSize,
+        @Schema(description = "전체 컨텐츠 수", example = "1")
         long totalElements,
+        @Schema(description = "전체 페이지 수", example = "1")
         int totalPages,
+        @Schema(description = "마지막 페이지 여부", example = "true")
         boolean last
 ) {
     /**

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.marvin.boiler.global.exception.BizException;
 import com.marvin.boiler.global.exception.ErrorCode;
 import com.marvin.boiler.global.exception.ExceptionDto;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 
@@ -16,11 +17,16 @@ import org.springframework.lang.Nullable;
  * @param error      에러 정보 (임시 Exception 타입)
  * @param <T>        데이터 타입
  */
+@Schema(description = "공통 응답 규격")
 public record BaseResponse<T>(
         @JsonIgnore
+        @Schema(hidden = true)
         HttpStatus httpStatus,
+        @Schema(description = "성공 여부", example = "true")
         boolean success,
+        @Schema(description = "응답 데이터 (성공 시)")
         @Nullable T data,
+        @Schema(description = "에러 정보 (실패 시)")
         @Nullable ExceptionDto error
 ) {
 
