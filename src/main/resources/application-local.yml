@@ -12,8 +12,8 @@ spring:
   # Database Connection
   datasource:
     hikari:
-      driver-class-name: org.h2.Driver
-      jdbc-url: jdbc:h2:mem:boilerdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE
+      driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      jdbc-url: jdbc:log4jdbc:h2:mem:boilerdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE
       username: ENC(8TAZSwUHur1E+5876zY1sQ==)
       password: ENC(uuLWXjM6J0+HoDO2TgLExsFMjc88Pt7r)
 
@@ -52,11 +52,7 @@ jasypt:
 logging:
   level:
     root: INFO
-    com.marvin.boiler: DEBUG
-    # HikariCP 로깅 설정
-    com.zaxxer.hikari: DEBUG
-    com.zaxxer.hikari.HikariConfig: DEBUG
-    # JPA 로깅 설정
-    org.hibernate.SQL: DEBUG
-    org.hibernate.orm.jdbc.bind: TRACE # 쿼리 파라미터 출력 (Hibernate 6)
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE # Hibernate 5 하위 호환
+    # 하이버네이트 자체 SQL 로그는 끄고 log4jdbc를 사용합니다.
+    org.hibernate.SQL: OFF
+    org.hibernate.orm.jdbc.bind: OFF
+    # 상세 로깅 설정은 log4j2-spring.xml에서 관리됩니다.

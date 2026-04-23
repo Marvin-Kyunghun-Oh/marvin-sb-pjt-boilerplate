@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration status="INFO">
+    <Properties>
+        <Property name="BASE_PATH">logs</Property>
+        <Property name="SERVICE_NAME">marvin-sb-pjt-boilerplate</Property>
+        <!-- ANSI 컬러가 적용된 로그 패턴 (로컬 개발 환경 가독성 향상) -->
+        <Property name="LOG_PATTERN">%style{%d{yyyy-MM-dd HH:mm:ss.SSS}}{cyan} %highlight{%-5level} %style{[%t]}{yellow} %style{%logger{36}}{blue} - %msg%n</Property>
+    </Properties>
+
+    <Appenders>
+        <!-- 콘솔 출력 -->
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}" disableAnsi="false"/>
+        </Console>
+
+        <!-- 전체 로그 파일 -->
+        <RollingFile name ="RollingFile">
+            <FileName>${BASE_PATH}/${SERVICE_NAME}.log</FileName>
+            <FilePattern>${BASE_PATH}/archive/${SERVICE_NAME}_%d{yyyy-MM-dd}.log.zip</FilePattern>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="30"/>
+        </RollingFile>
+
+        <!-- 에러 전용 로그 파일 -->
+        <RollingFile name ="RollingFileError">
+            <FileName>${BASE_PATH}/${SERVICE_NAME}_error.log</FileName>
+            <FilePattern>${BASE_PATH}/archive/${SERVICE_NAME}_error_%d{yyyy-MM-dd}.log.zip</FilePattern>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="30"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="RollingFileError" level="ERROR"/>
+        </Root>
+
+        <!-- 프로젝트 패키지 로그 레벨 설정 -->
+        <Logger name="com.marvin.boiler" level="DEBUG" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="RollingFile"/>
+        </Logger>
+
+        <!-- log4jdbc 로깅 설정 (SQL 로그를 예쁘게 출력) -->
+        <Logger name="jdbc.sqlonly" level="INFO" additivity="false">
+            <AppenderRef ref="console"/>
+        </Logger>
+        <Logger name="jdbc.resultsettable" level="INFO" additivity="false">
+            <AppenderRef ref="console"/>
+        </Logger>
+        
+        <!-- 불필요하게 상세한 로그는 끔 -->
+        <Logger name="jdbc.audit" level="OFF" additivity="false"/>
+        <Logger name="jdbc.resultset" level="OFF" additivity="false"/>
+        <Logger name="jdbc.sqltiming" level="OFF" additivity="false"/>
+        <Logger name="jdbc.connection" level="OFF" additivity="false"/>
+    </Loggers>
+</Configuration>
