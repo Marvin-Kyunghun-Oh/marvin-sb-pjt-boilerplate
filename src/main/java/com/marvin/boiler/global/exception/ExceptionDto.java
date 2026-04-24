@@ -22,19 +22,19 @@ public record ExceptionDto(
         List<FieldError> errors
 ) {
     /**
-     * 일반적인 에러 생성
+     * 일반적인 에러 생성 (번역된 메시지 포함)
      */
-    public static ExceptionDto of(ErrorCode errorCode) {
-        return new ExceptionDto(errorCode.getCode(), errorCode.getMessage(), List.of());
+    public static ExceptionDto of(ErrorCode errorCode, String translatedMessage) {
+        return new ExceptionDto(errorCode.getCode(), translatedMessage, List.of());
     }
 
     /**
      * 유효성 검증 실패(BindingResult) 시 에러 생성 (@Valid)
      */
-    public static ExceptionDto of(ErrorCode errorCode, BindingResult bindingResult) {
+    public static ExceptionDto of(ErrorCode errorCode, String translatedMessage, BindingResult bindingResult) {
         return new ExceptionDto(
                 errorCode.getCode(),
-                errorCode.getMessage(),
+                translatedMessage,
                 FieldError.from(bindingResult)
         );
     }
@@ -42,7 +42,7 @@ public record ExceptionDto(
     /**
      * 유효성 검증 실패(HandlerMethodValidationException) 시 에러 생성 (Spring 6.1+)
      */
-    public static ExceptionDto of(ErrorCode errorCode, HandlerMethodValidationException e) {
+    public static ExceptionDto of(ErrorCode errorCode, String translatedMessage, HandlerMethodValidationException e) {
         List<FieldError> errors = e.getParameterValidationResults().stream()
                 .flatMap(result -> result.getResolvableErrors().stream()
                         .map(error -> {
@@ -52,7 +52,7 @@ public record ExceptionDto(
                         }))
                 .collect(Collectors.toList());
 
-        return new ExceptionDto(errorCode.getCode(), errorCode.getMessage(), errors);
+        return new ExceptionDto(errorCode.getCode(), translatedMessage, errors);
     }
 
     /**

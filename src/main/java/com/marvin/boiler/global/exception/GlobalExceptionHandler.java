@@ -1,7 +1,9 @@
 package com.marvin.boiler.global.exception;
 
+import com.marvin.boiler.global.utils.MessageUtils;
 import com.marvin.boiler.global.dto.BaseResponse;
 import jakarta.validation.ConstraintViolationException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -13,7 +15,10 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 @Slf4j
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+    private final MessageUtils messageUtils;
 
     /**
      * Bean Validation (@Valid) 유효성 검증 실패
@@ -22,9 +27,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<BaseResponse<?>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.warn("MethodArgumentNotValidException: {}", e.getMessage());
         ErrorCode errorCode = ErrorCode.REQUEST_ARGUMENT_NOT_VALID;
+        String message = messageUtils.getMessage(errorCode.getMessage());
+        
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, e.getBindingResult())));
+                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, message, e.getBindingResult())));
     }
 
     /**
@@ -34,9 +41,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<BaseResponse<?>> handleHandlerMethodValidationException(HandlerMethodValidationException e) {
         log.warn("HandlerMethodValidationException: {}", e.getMessage());
         ErrorCode errorCode = ErrorCode.REQUEST_ARGUMENT_NOT_VALID;
+        String message = messageUtils.getMessage(errorCode.getMessage());
+
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, e)));
+                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, message, e)));
     }
 
     /**
@@ -46,10 +55,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<BaseResponse<?>> handleConstraintViolationException(ConstraintViolationException e) {
         log.warn("Constraint violation: {}", e.getMessage());
         ErrorCode errorCode = ErrorCode.REQUEST_ARGUMENT_NOT_VALID;
+        String message = messageUtils.getMessage(errorCode.getMessage());
         
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(BaseResponse.fail(new BizException(errorCode)));
+                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, message)));
     }
 
     /**
@@ -59,10 +69,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<BaseResponse<?>> handleNotFoundException(Exception e) {
         log.warn("Not found or Method not supported: {}", e.getMessage());
         ErrorCode errorCode = ErrorCode.NOT_FOUND_END_POINT;
+        String message = messageUtils.getMessage(errorCode.getMessage());
         
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(BaseResponse.fail(new BizException(errorCode)));
+                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, message)));
     }
 
     /**
@@ -70,11 +81,13 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BizException.class)
     public ResponseEntity<BaseResponse<?>> handleBizException(BizException e) {
-        log.error("Business Exception [{}]: {}", e.getErrorCode().getCode(), e.getErrorCode().getMessage());
+        ErrorCode errorCode = e.getErrorCode();
+        String message = messageUtils.getMessage(errorCode.getMessage());
+        log.error("Business Exception [{}]: {}", errorCode.getCode(), message);
         
         return ResponseEntity
-                .status(e.getErrorCode().getHttpStatus())
-                .body(BaseResponse.fail(e));
+                .status(errorCode.getHttpStatus())
+                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, message)));
     }
 
     /**
@@ -84,9 +97,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<BaseResponse<?>> handleException(Exception e) {
         log.error("Unexpected Internal Server Error: ", e);
         ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
+        String message = messageUtils.getMessage(errorCode.getMessage());
         
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(BaseResponse.fail(new BizException(errorCode)));
+                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, message)));
     }
 }

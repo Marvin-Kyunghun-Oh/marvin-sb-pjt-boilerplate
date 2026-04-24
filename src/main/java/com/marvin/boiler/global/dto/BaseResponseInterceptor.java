@@ -16,7 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
  * 모든 API 응답을 가로채서 공통 규격(BaseResponse)으로 변환하고 상태 코드를 설정합니다.
  */
 @Slf4j
-@RestControllerAdvice(basePackages = "com.marvin.boiler.domain")
+@RestControllerAdvice(basePackages = "com.marvin.boiler.domain") // swagger나 actuator 응답을 패스하기 위해, API 도메인에만 응답 규격을 강제함.
 @RequiredArgsConstructor
 public class BaseResponseInterceptor implements ResponseBodyAdvice<Object> {
 

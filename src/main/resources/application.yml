@@ -83,6 +83,14 @@ spring:
       # (기본값: 10분)
       connection-timeout: 10000
 
+  # 국제화 설정
+  messages:
+    basename: i18n/messages,i18n/errors,i18n/validation
+    encoding: UTF-8
+    fallback-to-system-locale: false # 시스템 언어가 아닌 기본 메시지 파일(messages.properties) 사용
+    use-code-as-default-message: true # 해당 키의 메시지가 없다면 디폴트로 설정 (원래라면 NoSuch... 예외 발생)
+    cache-duration: 3600s
+
 # ===================================================================
 # SpringDoc (Swagger) 설정
 # ===================================================================

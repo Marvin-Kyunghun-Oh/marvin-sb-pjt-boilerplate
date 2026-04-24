@@ -42,8 +42,8 @@ public record BaseResponse<T>(
         return new BaseResponse<>(HttpStatus.NO_CONTENT, true, null, null);
     }
 
-    public static <T> BaseResponse<T> fail(final BizException e) {
-        return new BaseResponse<>(e.getErrorCode().getHttpStatus(), false, null, ExceptionDto.of(e.getErrorCode()));
+    public static <T> BaseResponse<T> fail(final BizException e, String translatedMessage) {
+        return new BaseResponse<>(e.getErrorCode().getHttpStatus(), false, null, ExceptionDto.of(e.getErrorCode(), translatedMessage));
     }
 
     public static <T> BaseResponse<T> fail(final ErrorCode errorCode, final ExceptionDto exceptionDto) {
