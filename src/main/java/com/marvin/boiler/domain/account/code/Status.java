@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 @Getter
 @RequiredArgsConstructor
 public enum Status implements BaseEnum {
-    ACTIVE(1, "활성"),
-    SUSPENDED(9, "정지"),
-    DELETED(0, "삭제");
+    ACTIVE(1, "account.status.active"),
+    SUSPENDED(9, "account.status.suspended"),
+    DELETED(0, "account.status.deleted");
 
     private final int code;
     private final String description;

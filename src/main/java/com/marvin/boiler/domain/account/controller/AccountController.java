@@ -32,7 +32,7 @@ public class AccountController {
     @Operation(summary = "회원 가입", description = "새로운 회원을 등록합니다.")
     @PostMapping
     public BaseResponse<AccountApiDto.CreateResponse> createAccount(@Valid @RequestBody AccountApiDto.CreateRequest request) {
-        return BaseResponse.created(accountService.createAccount(request));
+        return BaseResponse.created(accountService.createAccount(request), "common.save.success");
     }
 
     /**
@@ -44,7 +44,7 @@ public class AccountController {
             @Parameter(description = "계정 ID", example = "1") @PathVariable @Min(1L) Long accountId,
             @Valid @RequestBody AccountApiDto.UpdateRequest request) {
         accountService.updateAccount(accountId, request);
-        return BaseResponse.noContent();
+        return BaseResponse.ok(null, "common.save.success");
     }
 
     /**
@@ -52,10 +52,10 @@ public class AccountController {
      */
     @Operation(summary = "회원 목록 조회", description = "회원 목록을 페이징하여 조회합니다.")
     @Parameters({
-         @Parameter(name = "page", description = "페이지 번호 (0부터 시작)", example = "0"),
-         @Parameter(name = "size", description = "한 페이지당 항목 수", example = "10"),
-         @Parameter(name = "sort", description = "정렬 기준 (필드명,ASC|DESC)", example = "accountId,DESC")
-     })
+            @Parameter(name = "page", description = "페이지 번호 (0부터 시작)", example = "0"),
+            @Parameter(name = "size", description = "한 페이지당 항목 수", example = "10"),
+            @Parameter(name = "sort", description = "정렬 기준 (필드명,ASC|DESC)", example = "accountId,DESC")
+    })
     @GetMapping
     public BaseResponse<AccountApiDto.ListResponse> getAccounts(
             @ParameterObject
@@ -73,4 +73,5 @@ public class AccountController {
             @Parameter(description = "계정 ID", example = "1") @PathVariable @Min(1L) Long accountId) {
         return BaseResponse.ok(accountService.getAccount(accountId));
     }
+
 }

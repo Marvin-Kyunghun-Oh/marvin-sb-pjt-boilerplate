@@ -23,13 +23,15 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CodeController {
 
+    private final EnumMapper enumMapper;
+
     /**
      * 특정 도메인별 코드 조회가 필요한 경우
      */
     @Operation(summary = "회원 상태 코드 조회", description = "회원 도메인에서 사용하는 상태 코드 목록을 조회합니다.")
     @GetMapping("/account-status")
     public BaseResponse<List<EnumResponse>> getAccountStatus() {
-        return BaseResponse.ok(EnumMapper.toResponseList(Status.class));
+        return BaseResponse.ok(enumMapper.toResponseList(Status.class));
     }
 
     /**
@@ -41,10 +43,10 @@ public class CodeController {
         Map<String, List<EnumResponse>> codes = new LinkedHashMap<>();
         
         // 회원 상태 코드
-        codes.put("accountStatus", EnumMapper.toResponseList(Status.class));
+        codes.put("accountStatus", enumMapper.toResponseList(Status.class));
         
         // 새로운 Enum 추가 시 여기에 put()만 추가하면 됨
-        // codes.put("orderType", EnumMapper.toResponseList(OrderType.class));
+        // codes.put("orderType", enumMapper.toResponseList(OrderType.class));
 
         return BaseResponse.ok(codes);
     }
