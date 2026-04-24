@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * 공통 페이징 응답 규격
@@ -40,5 +41,22 @@ public record PageResponse<T>(
                 page.getTotalPages(),
                 page.isLast()
         );
+    }
+
+    /**
+     * Page 객체와 매핑 함수를 받아 PageResponse를 생성합니다.
+     * (서비스 레이어 혹은 매퍼에서 반복되는 변환 로직을 공통화)
+     *
+     * @param page   Spring Data JPA의 Page 객체
+     * @param mapper 엔티티를 DTO로 변환하는 함수 (ex: accountMapper::toSummary)
+     * @param <T>    엔티티 타입
+     * @param <R>    DTO 타입
+     * @return PageResponse
+     */
+    public static <T, R> PageResponse<R> of(Page<T> page, Function<T, R> mapper) {
+        List<R> content = page.getContent().stream()
+                .map(mapper)
+                .toList();
+        return from(page, content);
     }
 }

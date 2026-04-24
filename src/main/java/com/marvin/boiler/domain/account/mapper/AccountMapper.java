@@ -34,11 +34,10 @@ public interface AccountMapper {
     @IterableMapping(qualifiedByName = "toSummary")
     List<AccountApiDto.Summary> toSummaryList(List<Account> accounts);
 
-    // List<Account> -> 최종 응답 객체 변환 (페이징관련 필드 추가 버전)
+    // Page<Account> -> 최종 응답 객체 변환 (PageResponse.of 활용)
     default AccountApiDto.ListResponse toListResponse(Page<Account> page) {
-        List<AccountApiDto.Summary> summaries = toSummaryList(page.getContent());
         return new AccountApiDto.ListResponse(
-                PageResponse.from(page, summaries));
+                PageResponse.of(page, this::toSummary));
     }
 
     /**
