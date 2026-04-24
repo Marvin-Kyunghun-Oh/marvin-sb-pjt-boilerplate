@@ -3,8 +3,8 @@
     <Properties>
         <Property name="BASE_PATH">logs</Property>
         <Property name="SERVICE_NAME">marvin-sb-pjt-boilerplate</Property>
-        <!-- ANSI 컬러가 적용된 로그 패턴 (로컬 개발 환경 가독성 향상) -->
-        <Property name="LOG_PATTERN">%style{%d{yyyy-MM-dd HH:mm:ss.SSS}}{cyan} %highlight{%-5level} %style{[%t]}{yellow} %style{%logger{36}}{blue} - %msg%n</Property>
+        <!-- ANSI 컬러 및 MDC TraceID가 적용된 로그 패턴 -->
+        <Property name="LOG_PATTERN">%style{%d{yyyy-MM-dd HH:mm:ss.SSS}}{cyan} %highlight{%-5level} %style{[%X{traceId}]}{magenta} %style{[%t]}{yellow} %style{%logger{36}}{blue} - %msg%n</Property>
     </Properties>
 
     <Appenders>

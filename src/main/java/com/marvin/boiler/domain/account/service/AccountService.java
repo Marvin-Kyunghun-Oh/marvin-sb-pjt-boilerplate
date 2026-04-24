@@ -8,9 +8,7 @@ import com.marvin.boiler.global.exception.BizException;
 import com.marvin.boiler.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +28,7 @@ public class AccountService {
      */
     @Transactional
     public AccountApiDto.CreateResponse createAccount(AccountApiDto.CreateRequest request) {
+        log.debug("==================== createAccount Start!!");
         Account createAccount = accountRepository.save(accountMapper.toEntity(request));
         return accountMapper.toCreateResponse(createAccount);
     }
@@ -42,6 +41,7 @@ public class AccountService {
      */
     @Transactional
     public void updateAccount(Long accountId, AccountApiDto.UpdateRequest request) {
+        log.debug("==================== updateAccount Start!!");
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new BizException(ErrorCode.ACCOUNT_NOT_FOUND));
 
@@ -60,6 +60,7 @@ public class AccountService {
      */
     @Transactional(readOnly = true)
     public AccountApiDto.ListResponse getAccounts(Pageable pageable) {
+        log.debug("==================== getAccounts Start!!");
         return accountMapper.toListResponse(accountRepository.findAll(pageable));
     }
 
@@ -70,6 +71,7 @@ public class AccountService {
      */
     @Transactional(readOnly = true)
     public AccountApiDto.GetResponse getAccount(Long accountId) {
+        log.debug("==================== getAccount Start!!");
         return accountMapper.toDetailResponse(
                 accountRepository.findById(accountId)
                                 .orElseThrow(() -> new BizException(ErrorCode.ACCOUNT_NOT_FOUND)));
