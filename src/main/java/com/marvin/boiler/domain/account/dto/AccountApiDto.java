@@ -1,11 +1,10 @@
 package com.marvin.boiler.domain.account.dto;
 
+import com.marvin.boiler.domain.account.Password;
 import com.marvin.boiler.domain.account.code.Status;
 import com.marvin.boiler.global.dto.PageResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -67,8 +66,25 @@ public class AccountApiDto {
             String email,
             @Schema(description = "상태 (ACTIVE, INACTIVE 등)")
             @NotNull(message = "{validation.status.not_null}")
-            Status status
-    ) {}
+            Status status,
+            @Schema(description = "비밀번호", example = "password123")
+            @NotBlank(message = "{validation.password.not_blank}")
+            @Pattern(
+                    regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$",
+                    message = "{validation.password.pattern}"
+            )
+            String password,
+            @Schema(description = "비밀번호_확인", example = "password123")
+            @NotBlank(message = "{validation.password.not_blank}")
+            String confirmPassword
+
+    ) {
+
+        @AssertTrue(message = "{validation.password.mismatch}")
+        public boolean isPasswordMatched() {
+            return password != null && password.equals(confirmPassword);
+        }
+    }
 
     @Schema(description = "회원 가입 응답")
     public record CreateResponse(

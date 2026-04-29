@@ -1,6 +1,7 @@
 package com.marvin.boiler.domain.account.mapper;
 
 import com.marvin.boiler.domain.account.Account;
+import com.marvin.boiler.domain.account.Password;
 import com.marvin.boiler.domain.account.dto.AccountApiDto;
 import com.marvin.boiler.global.dto.PageResponse;
 import org.mapstruct.*;
@@ -22,6 +23,11 @@ public interface AccountMapper {
      */
     @Named("toEntity")
     Account toEntity(AccountApiDto.CreateRequest request);
+
+    // [toEntity] String -> Password
+    default Password toPassword(String password) {
+        return Password.of(password);
+    }
     @Named("toCreateResponse")
     AccountApiDto.CreateResponse toCreateResponse(Account account);
 
@@ -46,5 +52,6 @@ public interface AccountMapper {
      */
     @Named("toDetailResponse")
     AccountApiDto.GetResponse toDetailResponse(Account account);
+    
 
 }
