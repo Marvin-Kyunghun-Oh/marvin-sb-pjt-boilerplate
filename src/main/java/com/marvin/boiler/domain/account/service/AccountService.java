@@ -42,8 +42,7 @@ public class AccountService {
     @Transactional
     public void updateAccount(Long accountId, AccountApiDto.UpdateRequest request) {
         log.debug("==================== updateAccount Start!!");
-        Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new BizException(ErrorCode.ACCOUNT_NOT_FOUND));
+        Account account = this.findAccountById(accountId);
 
         // 회원 정보 변경
         account.updateName(request.name());
@@ -72,9 +71,29 @@ public class AccountService {
     @Transactional(readOnly = true)
     public AccountApiDto.GetResponse getAccount(Long accountId) {
         log.debug("==================== getAccount Start!!");
-        return accountMapper.toDetailResponse(
-                accountRepository.findById(accountId)
-                                .orElseThrow(() -> new BizException(ErrorCode.ACCOUNT_NOT_FOUND)));
+        return accountMapper.toDetailResponse(this.findAccountById(accountId));
+    }
+
+    /**
+     * 비밀번호 변경
+     * @param accountId
+     * @param request
+     */
+    @Transactional
+    public void changePassword(Long accountId, AccountApiDto.ChangePasswordRequest request) {
+        log.debug("==================== changePassword Start!! accountId: {}", accountId);
+
+        // 유효성 검증
+
+        // 회원 비밀번호 변경
+        Account account = this.findAccountById(accountId);
+        account.changePassword(request.newPassword());
+    }
+
+    @Transactional(readOnly = true)
+    private Account findAccountById(Long accountId) {
+        return accountRepository.findById(accountId)
+                .orElseThrow(() -> new BizException(ErrorCode.ACCOUNT_NOT_FOUND));
     }
 
 }

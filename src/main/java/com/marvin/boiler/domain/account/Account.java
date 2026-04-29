@@ -65,4 +65,10 @@ public class Account extends BaseTimeEntity {
             this.email = email;
         }
     }
+
+    public void changePassword(String newPassword) {
+        if (StringUtils.hasText(newPassword)) {
+            this.password = Password.of(newPassword);
+        }
+    }
 }

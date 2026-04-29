@@ -1,6 +1,5 @@
 package com.marvin.boiler.domain.account.dto;
 
-import com.marvin.boiler.domain.account.Password;
 import com.marvin.boiler.domain.account.code.Status;
 import com.marvin.boiler.global.dto.PageResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -104,4 +103,23 @@ public class AccountApiDto {
             @Schema(description = "VIP 여부", example = "true")
             Boolean vipYn
     ) {}
+
+    @Schema(description = "비밀번호 변경")
+    public record ChangePasswordRequest(
+            @Schema(description = "이전 비밀번호", example = "password123")
+            @NotBlank(message = "{validation.password.not_blank}")
+            @Pattern(
+                    regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$",
+                    message = "{validation.password.pattern}"
+            )
+            String oldPassword,
+
+            @Schema(description = "변경 비밀번호", example = "Change1234!")
+            @NotBlank(message = "{validation.password.not_blank}")
+            @Pattern(
+                    regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$",
+                    message = "{validation.password.pattern}"
+            )
+            String newPassword
+    ){}
 }
