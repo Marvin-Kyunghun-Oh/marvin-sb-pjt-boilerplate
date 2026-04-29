@@ -34,6 +34,9 @@ public class Account extends BaseTimeEntity {
     @Column(unique = true, nullable = false, length = 150)
     private String email;
 
+    @Embedded
+    private Password password;
+
     @Column(nullable = false)
     @Builder.Default
     private Boolean vipYn = false; // 기본값 설정

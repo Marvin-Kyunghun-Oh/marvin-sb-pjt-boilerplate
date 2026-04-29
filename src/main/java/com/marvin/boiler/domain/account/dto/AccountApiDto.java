@@ -1,6 +1,7 @@
 package com.marvin.boiler.domain.account.dto;
 
 import com.marvin.boiler.domain.account.code.Status;
+import com.marvin.boiler.global.dto.PageResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -20,7 +21,7 @@ public class AccountApiDto {
     @Schema(description = "회원 목록 조회 응답")
     public record ListResponse(
             @Schema(description = "페이징 결과")
-            com.marvin.boiler.global.dto.PageResponse<Summary> page
+            PageResponse<Summary> page
     ) {}
 
     @Schema(description = "회원 요약 정보")
