@@ -1,6 +1,7 @@
 package com.marvin.boiler.domain.account.service;
 
 import com.marvin.boiler.domain.account.Account;
+import com.marvin.boiler.domain.account.Password;
 import com.marvin.boiler.domain.account.dto.AccountApiDto;
 import com.marvin.boiler.domain.account.mapper.AccountMapper;
 import com.marvin.boiler.domain.account.repository.AccountRepository;
@@ -83,13 +84,29 @@ public class AccountService {
     public void changePassword(Long accountId, AccountApiDto.ChangePasswordRequest request) {
         log.debug("==================== changePassword Start!! accountId: {}", accountId);
 
-        // 유효성 검증
-
-        // 회원 비밀번호 변경
+        // 회원정보 조회
         Account account = this.findAccountById(accountId);
+
+        // [유효성 검증 1] - 현재 비밀번호(oldPassword)가 불일치하는지 먼저 체크 (보안 우선)
+        if (!account.getPassword().isSame(request.oldPassword())) {
+            throw new BizException(ErrorCode.ACCOUNT_INVALID_PASSWORD);
+        }
+
+        // [유효성 검증 2] - 새 비밀번호(newPassword)가 이전 패스워드와 동일한지 체크
+        if (account.getPassword().isSame(request.newPassword())) {
+            throw new BizException(ErrorCode.ACCOUNT_SAME_AS_OLD_PASSWORD);
+        }
+
+        // 회원 비밀번호 변경 (이 내부의 Password.of에서 규약 검증 수행)
         account.changePassword(request.newPassword());
     }
 
+
+    /**
+     * 회원 단건 조회
+     * @param accountId
+     * @return
+     */
     @Transactional(readOnly = true)
     private Account findAccountById(Long accountId) {
         return accountRepository.findById(accountId)

@@ -19,6 +19,9 @@ public enum ErrorCode {
     // Account (A)
     ACCOUNT_NOT_FOUND("A001", HttpStatus.BAD_REQUEST, "error.account.not_found"),
     ACCOUNT_EXISTS("A002", HttpStatus.BAD_REQUEST, "error.account.exists"),
+    ACCOUNT_INVALID_NEWPASSWORD_PATTERN("A003", HttpStatus.BAD_REQUEST, "validation.password.pattern"),
+    ACCOUNT_SAME_AS_OLD_PASSWORD("A004", HttpStatus.BAD_REQUEST, "error.account.same_as_old_password"),
+    ACCOUNT_INVALID_PASSWORD("A005", HttpStatus.BAD_REQUEST, "error.account.invalid_password"),
 
     // END ENUM
     TEST_ERROR("C999", HttpStatus.INTERNAL_SERVER_ERROR, "error.test");
