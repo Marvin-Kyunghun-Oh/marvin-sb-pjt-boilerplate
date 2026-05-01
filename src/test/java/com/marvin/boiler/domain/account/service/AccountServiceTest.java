@@ -70,7 +70,8 @@ class AccountServiceTest {
                 .willReturn(Optional.of(account));
 
         // when
-        Throwable throwable = catchThrowable(() -> accountService.changePassword(accountId, request));
+        Throwable throwable = catchThrowable(() ->
+                accountService.changePassword(accountId, request));
 
         // then
         assertThat(throwable)
@@ -96,7 +97,8 @@ class AccountServiceTest {
                 .willReturn(Optional.of(account));
 
         // when
-        Throwable throwable = catchThrowable(() -> accountService.changePassword(accountId, request));
+        Throwable throwable = catchThrowable(() ->
+                accountService.changePassword(accountId, request));
 
         // then
         assertThat(throwable)
@@ -123,7 +125,8 @@ class AccountServiceTest {
                 .willReturn(Optional.of(account));
 
         // when
-        Throwable throwable = catchThrowable(() -> accountService.changePassword(accountId, request));
+        Throwable throwable = catchThrowable(() ->
+                accountService.changePassword(accountId, request));
 
         // then
         assertThat(throwable)
