@@ -74,4 +74,15 @@ public class AccountController {
         return BaseResponse.ok(accountService.getAccount(accountId));
     }
 
+    @Operation(summary = "비밀번호 변경", description = "특정 ID를 가진 회원의 비밀번호를 변경합니다.")
+    @PatchMapping("/{accountId}/password")
+    public BaseResponse<Void> changePassword(
+            @Parameter(description = "계정 ID", example = "1") @PathVariable @Min(1L) Long accountId,
+            @Valid @RequestBody AccountApiDto.ChangePasswordRequest request) {
+
+        accountService.changePassword(accountId, request);
+        return BaseResponse.ok(null, "common.save.success");
+    }
+
+
 }

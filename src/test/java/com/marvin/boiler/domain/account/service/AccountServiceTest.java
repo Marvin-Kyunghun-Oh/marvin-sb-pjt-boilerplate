@@ -46,7 +46,7 @@ class AccountServiceTest {
             String oldPassword = DEFAULT_PASSWORD; // 상수 활용
             String newPassword = "Password456@"; // 테스트 타겟 값은 리터럴로 명시
             AccountApiDto.ChangePasswordRequest request =
-                    new AccountApiDto.ChangePasswordRequest(oldPassword, newPassword);
+                    new AccountApiDto.ChangePasswordRequest(oldPassword, newPassword, newPassword);
 
             Account account = AccountFixture.createAccount(); // 기본 빌더 활용
 
@@ -66,8 +66,9 @@ class AccountServiceTest {
         void fail_account_not_found() {
             // given
             Long invalidAccountId = 999L;
+            String newPassword = "NewPass456@";
             AccountApiDto.ChangePasswordRequest request =
-                    new AccountApiDto.ChangePasswordRequest(DEFAULT_PASSWORD, "NewPass456@");
+                    new AccountApiDto.ChangePasswordRequest(DEFAULT_PASSWORD, newPassword, newPassword);
 
             given(accountRepository.findById(invalidAccountId))
                     .willReturn(Optional.empty());
@@ -93,8 +94,9 @@ class AccountServiceTest {
             Long accountId = ACCOUNTID_1;
             String actualPasswordInDb = DEFAULT_PASSWORD;
             String wrongOldPasswordInput = "WrongPass123*"; // 틀린 값임을 명시
+            String newPassword = "Password456&";
             AccountApiDto.ChangePasswordRequest request =
-                    new AccountApiDto.ChangePasswordRequest(wrongOldPasswordInput, "Password456&");
+                    new AccountApiDto.ChangePasswordRequest(wrongOldPasswordInput, newPassword, newPassword);
 
             Account account = AccountFixture.createAccountBuilder()
                     .password(Password.of(actualPasswordInDb))
@@ -123,7 +125,7 @@ class AccountServiceTest {
             Long accountId = ACCOUNTID_1;
             String password = DEFAULT_PASSWORD;
             AccountApiDto.ChangePasswordRequest request =
-                    new AccountApiDto.ChangePasswordRequest(password, password);
+                    new AccountApiDto.ChangePasswordRequest(password, password, password);
 
             Account account = AccountFixture.createAccountBuilder()
                     .password(Password.of(password))
@@ -153,7 +155,7 @@ class AccountServiceTest {
             String oldPassword = DEFAULT_PASSWORD;
             String invalidNewPassword = "short"; // 규약 위반임을 명시
             AccountApiDto.ChangePasswordRequest request =
-                    new AccountApiDto.ChangePasswordRequest(oldPassword, invalidNewPassword);
+                    new AccountApiDto.ChangePasswordRequest(oldPassword, invalidNewPassword, invalidNewPassword);
 
             Account account = AccountFixture.createAccount();
 

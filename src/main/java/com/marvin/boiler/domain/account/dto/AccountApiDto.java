@@ -3,6 +3,7 @@ package com.marvin.boiler.domain.account.dto;
 import com.marvin.boiler.domain.account.Password;
 import com.marvin.boiler.domain.account.code.Status;
 import com.marvin.boiler.global.dto.PageResponse;
+import com.marvin.boiler.global.validator.FieldMatch;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
@@ -106,8 +107,9 @@ public class AccountApiDto {
     ) {}
 
     @Schema(description = "비밀번호 변경")
+    @FieldMatch(first = "newPassword", second = "confirmNewPassword", message = "{validation.password.mismatch}")
     public record ChangePasswordRequest(
-            @Schema(description = "이전 비밀번호", example = "password123")
+            @Schema(description = "이전 비밀번호", example = "Password123!")
             @NotBlank(message = "{validation.password.not_blank}")
             @Pattern(
                     regexp = Password.REGEX,
@@ -121,6 +123,14 @@ public class AccountApiDto {
                     regexp = Password.REGEX,
                     message = "{validation.password.pattern}"
             )
-            String newPassword
+            String newPassword,
+
+            @Schema(description = "변경 비밀번호 - 확인", example = "Change1234!")
+            @NotBlank(message = "{validation.password.not_blank}")
+            @Pattern(
+                    regexp = Password.REGEX,
+                    message = "{validation.password.pattern}"
+            )
+            String confirmNewPassword
     ){}
 }
