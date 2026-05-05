@@ -8,6 +8,7 @@ import com.marvin.boiler.domain.account.repository.AccountRepository;
 import com.marvin.boiler.global.exception.BizException;
 import com.marvin.boiler.global.exception.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,139 +34,145 @@ class AccountServiceTest {
     @Mock
     private AccountRepository accountRepository;
 
-    @Test
-    @DisplayName("비밀번호 변경 - 성공")
-    void changePassword_success() {
-        // given
-        Long accountId = ACCOUNTID_1;
-        String oldPassword = DEFAULT_PASSWORD; // 상수 활용
-        String newPassword = "Password456@"; // 테스트 타겟 값은 리터럴로 명시
-        AccountApiDto.ChangePasswordRequest request =
-                new AccountApiDto.ChangePasswordRequest(oldPassword, newPassword);
+    @Nested
+    @DisplayName("비밀번호 변경")
+    class changePassword {
 
-        Account account = AccountFixture.createAccount(); // 기본 빌더 활용
+        @Test
+        @DisplayName("성공")
+        void success() {
+            // given
+            Long accountId = ACCOUNTID_1;
+            String oldPassword = DEFAULT_PASSWORD; // 상수 활용
+            String newPassword = "Password456@"; // 테스트 타겟 값은 리터럴로 명시
+            AccountApiDto.ChangePasswordRequest request =
+                    new AccountApiDto.ChangePasswordRequest(oldPassword, newPassword);
 
-        given(accountRepository.findById(accountId))
-                .willReturn(Optional.of(account));
+            Account account = AccountFixture.createAccount(); // 기본 빌더 활용
 
-        // when
-        accountService.changePassword(accountId, request);
+            given(accountRepository.findById(accountId))
+                    .willReturn(Optional.of(account));
 
-        // then
-        assertThat(account.getPassword().getValue()).isEqualTo(newPassword);
-        verify(accountRepository, times(1)).findById(accountId);
-    }
+            // when
+            accountService.changePassword(accountId, request);
 
-    @Test
-    @DisplayName("비밀번호 변경 - 실패: 존재하지 않는 계정")
-    void changePassword_fail_account_not_found() {
-        // given
-        Long invalidAccountId = 999L;
-        AccountApiDto.ChangePasswordRequest request =
-                new AccountApiDto.ChangePasswordRequest(DEFAULT_PASSWORD, "NewPass456@");
+            // then
+            assertThat(account.getPassword().getValue()).isEqualTo(newPassword);
+            verify(accountRepository, times(1)).findById(accountId);
+        }
 
-        given(accountRepository.findById(invalidAccountId))
-                .willReturn(Optional.empty());
+        @Test
+        @DisplayName("실패: 존재하지 않는 계정")
+        void fail_account_not_found() {
+            // given
+            Long invalidAccountId = 999L;
+            AccountApiDto.ChangePasswordRequest request =
+                    new AccountApiDto.ChangePasswordRequest(DEFAULT_PASSWORD, "NewPass456@");
 
-        // when
-        Throwable throwable = catchThrowable(() ->
-                accountService.changePassword(invalidAccountId, request));
+            given(accountRepository.findById(invalidAccountId))
+                    .willReturn(Optional.empty());
 
-        // then
-        assertThat(throwable)
-                .isInstanceOf(BizException.class)
-                .extracting("errorCode")
-                .isEqualTo(ErrorCode.ACCOUNT_NOT_FOUND);
+            // when
+            Throwable throwable = catchThrowable(() ->
+                    accountService.changePassword(invalidAccountId, request));
 
-        verify(accountRepository, times(1)).findById(invalidAccountId);
-        verify(accountRepository, never()).save(any());
-    }
+            // then
+            assertThat(throwable)
+                    .isInstanceOf(BizException.class)
+                    .extracting("errorCode")
+                    .isEqualTo(ErrorCode.ACCOUNT_NOT_FOUND);
 
-    @Test
-    @DisplayName("비밀번호 변경 - 실패: 현재 비밀번호(oldPassword)가 불일치함")
-    void changePassword_fail_invalid_old_password() {
-        // given
-        Long accountId = ACCOUNTID_1;
-        String actualPasswordInDb = DEFAULT_PASSWORD;
-        String wrongOldPasswordInput = "WrongPass123*"; // 틀린 값임을 명시
-        AccountApiDto.ChangePasswordRequest request =
-                new AccountApiDto.ChangePasswordRequest(wrongOldPasswordInput, "Password456&");
+            verify(accountRepository, times(1)).findById(invalidAccountId);
+            verify(accountRepository, never()).save(any());
+        }
 
-        Account account = AccountFixture.createAccountBuilder()
-                .password(Password.of(actualPasswordInDb))
-                .build();
+        @Test
+        @DisplayName("실패: 현재 비밀번호(oldPassword)가 불일치함")
+        void fail_invalid_old_password() {
+            // given
+            Long accountId = ACCOUNTID_1;
+            String actualPasswordInDb = DEFAULT_PASSWORD;
+            String wrongOldPasswordInput = "WrongPass123*"; // 틀린 값임을 명시
+            AccountApiDto.ChangePasswordRequest request =
+                    new AccountApiDto.ChangePasswordRequest(wrongOldPasswordInput, "Password456&");
 
-        given(accountRepository.findById(accountId))
-                .willReturn(Optional.of(account));
+            Account account = AccountFixture.createAccountBuilder()
+                    .password(Password.of(actualPasswordInDb))
+                    .build();
 
-        // when
-        Throwable throwable = catchThrowable(() ->
-                accountService.changePassword(accountId, request));
+            given(accountRepository.findById(accountId))
+                    .willReturn(Optional.of(account));
 
-        // then
-        assertThat(throwable)
-                .isInstanceOf(BizException.class)
-                .extracting("errorCode")
-                .isEqualTo(ErrorCode.ACCOUNT_INVALID_PASSWORD);
-        
-        verify(accountRepository, times(1)).findById(accountId);
-    }
+            // when
+            Throwable throwable = catchThrowable(() ->
+                    accountService.changePassword(accountId, request));
 
-    @Test
-    @DisplayName("비밀번호 변경 - 실패: 새 비밀번호가 기존 비밀번호와 같음")
-    void changePassword_fail_same_as_old_password() {
-        // given
-        Long accountId = ACCOUNTID_1;
-        String password = DEFAULT_PASSWORD;
-        AccountApiDto.ChangePasswordRequest request =
-                new AccountApiDto.ChangePasswordRequest(password, password);
+            // then
+            assertThat(throwable)
+                    .isInstanceOf(BizException.class)
+                    .extracting("errorCode")
+                    .isEqualTo(ErrorCode.ACCOUNT_INVALID_PASSWORD);
 
-        Account account = AccountFixture.createAccountBuilder()
-                .password(Password.of(password))
-                .build();
+            verify(accountRepository, times(1)).findById(accountId);
+        }
 
-        given(accountRepository.findById(accountId))
-                .willReturn(Optional.of(account));
+        @Test
+        @DisplayName("실패: 새 비밀번호가 기존 비밀번호와 같음")
+        void fail_same_as_old_password() {
+            // given
+            Long accountId = ACCOUNTID_1;
+            String password = DEFAULT_PASSWORD;
+            AccountApiDto.ChangePasswordRequest request =
+                    new AccountApiDto.ChangePasswordRequest(password, password);
 
-        // when
-        Throwable throwable = catchThrowable(() ->
-                accountService.changePassword(accountId, request));
+            Account account = AccountFixture.createAccountBuilder()
+                    .password(Password.of(password))
+                    .build();
 
-        // then
-        assertThat(throwable)
-                .isInstanceOf(BizException.class)
-                .extracting("errorCode")
-                .isEqualTo(ErrorCode.ACCOUNT_SAME_AS_OLD_PASSWORD);
+            given(accountRepository.findById(accountId))
+                    .willReturn(Optional.of(account));
 
-        verify(accountRepository, times(1)).findById(accountId);
-    }
+            // when
+            Throwable throwable = catchThrowable(() ->
+                    accountService.changePassword(accountId, request));
 
-    @Test
-    @DisplayName("비밀번호 변경 - 실패: 새 비밀번호가 규약을 지키지 않음")
-    void changePassword_fail_invalid_newPassword_pattern() {
-        // given
-        Long accountId = ACCOUNTID_1;
-        String oldPassword = DEFAULT_PASSWORD;
-        String invalidNewPassword = "short"; // 규약 위반임을 명시
-        AccountApiDto.ChangePasswordRequest request =
-                new AccountApiDto.ChangePasswordRequest(oldPassword, invalidNewPassword);
+            // then
+            assertThat(throwable)
+                    .isInstanceOf(BizException.class)
+                    .extracting("errorCode")
+                    .isEqualTo(ErrorCode.ACCOUNT_SAME_AS_OLD_PASSWORD);
 
-        Account account = AccountFixture.createAccount();
+            verify(accountRepository, times(1)).findById(accountId);
+        }
 
-        given(accountRepository.findById(accountId))
-                .willReturn(Optional.of(account));
+        @Test
+        @DisplayName("실패: 새 비밀번호가 규약을 지키지 않음")
+        void fail_invalid_newPassword_pattern() {
+            // given
+            Long accountId = ACCOUNTID_1;
+            String oldPassword = DEFAULT_PASSWORD;
+            String invalidNewPassword = "short"; // 규약 위반임을 명시
+            AccountApiDto.ChangePasswordRequest request =
+                    new AccountApiDto.ChangePasswordRequest(oldPassword, invalidNewPassword);
 
-        // when
-        Throwable throwable = catchThrowable(() ->
-                accountService.changePassword(accountId, request));
+            Account account = AccountFixture.createAccount();
 
-        // then
-        assertThat(throwable)
-                .isInstanceOf(BizException.class)
-                .extracting("errorCode")
-                .isEqualTo(ErrorCode.ACCOUNT_INVALID_NEWPASSWORD_PATTERN);
+            given(accountRepository.findById(accountId))
+                    .willReturn(Optional.of(account));
 
-        verify(accountRepository, times(1)).findById(accountId);
+            // when
+            Throwable throwable = catchThrowable(() ->
+                    accountService.changePassword(accountId, request));
+
+            // then
+            assertThat(throwable)
+                    .isInstanceOf(BizException.class)
+                    .extracting("errorCode")
+                    .isEqualTo(ErrorCode.ACCOUNT_INVALID_NEWPASSWORD_PATTERN);
+
+            verify(accountRepository, times(1)).findById(accountId);
+        }
+
     }
 
 }

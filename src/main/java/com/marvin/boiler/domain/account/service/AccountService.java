@@ -1,7 +1,6 @@
 package com.marvin.boiler.domain.account.service;
 
 import com.marvin.boiler.domain.account.Account;
-import com.marvin.boiler.domain.account.Password;
 import com.marvin.boiler.domain.account.dto.AccountApiDto;
 import com.marvin.boiler.domain.account.mapper.AccountMapper;
 import com.marvin.boiler.domain.account.repository.AccountRepository;
