@@ -74,6 +74,7 @@ class AccountControllerTest {
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.success").value(false))
                     .andExpect(jsonPath("$.error.code").value(BASE_ERROR.getCode()))
+                    .andExpect(jsonPath("$.error.traceId").isNotEmpty())
                     .andDo(print());
         }
 
@@ -95,6 +96,7 @@ class AccountControllerTest {
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.success").value(false))
                     .andExpect(jsonPath("$.error.code").value(BASE_ERROR.getCode()))
+                    .andExpect(jsonPath("$.error.traceId").isNotEmpty())
                     .andDo(print());
         }
     }

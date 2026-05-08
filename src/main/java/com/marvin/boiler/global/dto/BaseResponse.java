@@ -58,7 +58,7 @@ public record BaseResponse<T>(
     // --- 실패 응답 팩토리 메서드 ---
 
     public static <T> BaseResponse<T> fail(final BizException e) {
-        return new BaseResponse<>(e.getErrorCode().getHttpStatus(), false, null, null, ExceptionDto.of(e.getErrorCode(), null));
+        return new BaseResponse<>(e.getErrorCode().getHttpStatus(), false, null, null, ExceptionDto.of(e.getErrorCode(), null, null));
     }
 
     public static <T> BaseResponse<T> fail(final ErrorCode errorCode, final ExceptionDto exceptionDto) {

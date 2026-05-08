@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
         
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, message, e.getBindingResult())));
+                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, message, e.getBindingResult(), null)));
     }
 
     /**
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, message, e)));
+                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, message, e, null)));
     }
 
     /**
@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
         
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, message)));
+                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, message, null)));
     }
 
     /**
@@ -73,7 +73,7 @@ public class GlobalExceptionHandler {
         
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, message)));
+                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, message, null)));
     }
 
     /**
@@ -87,7 +87,7 @@ public class GlobalExceptionHandler {
         
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, message)));
+                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, message, null)));
     }
 
     /**
@@ -101,6 +101,6 @@ public class GlobalExceptionHandler {
         
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, message)));
+                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, message, null)));
     }
 }

@@ -6,6 +6,8 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,7 +17,7 @@ import java.util.List;
 public class SwaggerConfig {
 
     @Bean
-    public OpenAPI openAPI() {
+    public OpenAPI openAPI(@Value("${server.servlet.context-path:/}") String contextPath) {
         String securitySchemeName = "BearerAuth";
 
         return new OpenAPI()
@@ -31,6 +33,7 @@ public class SwaggerConfig {
                         .title("Marvin API Specification")
                         .version("v1.0.0")
                         .description("표준화된 Spring Boot 보일러플레이트 API 명세서입니다."))
-                .servers(List.of(new Server().url("/").description("Default Server URL")));
+                // context-path를 서버 URL로 설정하여 Swagger UI의 API 호출 경로를 맞춤
+                .servers(List.of(new Server().url(contextPath).description("Default Server URL")));
     }
 }

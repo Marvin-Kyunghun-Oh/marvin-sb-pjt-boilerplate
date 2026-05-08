@@ -19,30 +19,33 @@ public record ExceptionDto(
         String message,
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         @Schema(description = "필드별 에러 상세 목록 (유효성 검증 실패 시에만 포함)")
-        List<FieldError> errors
+        List<FieldError> errors,
+        @Schema(description = "Trace-ID(에러추적용)", example = "5f6141e7")
+        String traceId
 ) {
     /**
      * 일반적인 에러 생성 (번역된 메시지 포함)
      */
-    public static ExceptionDto of(ErrorCode errorCode, String translatedMessage) {
-        return new ExceptionDto(errorCode.getCode(), translatedMessage, List.of());
+    public static ExceptionDto of(ErrorCode errorCode, String translatedMessage, String traceId) {
+        return new ExceptionDto(errorCode.getCode(), translatedMessage, List.of(), traceId);
     }
 
     /**
      * 유효성 검증 실패(BindingResult) 시 에러 생성 (@Valid)
      */
-    public static ExceptionDto of(ErrorCode errorCode, String translatedMessage, BindingResult bindingResult) {
+    public static ExceptionDto of(ErrorCode errorCode, String translatedMessage, BindingResult bindingResult, String traceId) {
         return new ExceptionDto(
                 errorCode.getCode(),
                 translatedMessage,
-                FieldError.from(bindingResult)
+                FieldError.from(bindingResult),
+                traceId
         );
     }
 
     /**
      * 유효성 검증 실패(HandlerMethodValidationException) 시 에러 생성 (Spring 6.1+)
      */
-    public static ExceptionDto of(ErrorCode errorCode, String translatedMessage, HandlerMethodValidationException e) {
+    public static ExceptionDto of(ErrorCode errorCode, String translatedMessage, HandlerMethodValidationException e, String traceId) {
         List<FieldError> errors = e.getParameterValidationResults().stream()
                 .flatMap(result -> result.getResolvableErrors().stream()
                         .map(error -> {
@@ -52,7 +55,7 @@ public record ExceptionDto(
                         }))
                 .collect(Collectors.toList());
 
-        return new ExceptionDto(errorCode.getCode(), translatedMessage, errors);
+        return new ExceptionDto(errorCode.getCode(), translatedMessage, errors, traceId);
     }
 
     /**
