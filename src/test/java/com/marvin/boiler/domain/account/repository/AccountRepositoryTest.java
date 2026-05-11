@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -25,6 +26,9 @@ class AccountRepositoryTest {
 
     @Autowired
     private TestEntityManager entityManager;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private static final String DEFAULT_NEW_PASSWORD = "NewPassword123!";
 
@@ -101,14 +105,14 @@ class AccountRepositoryTest {
             LocalDateTime initialUpdatedAt = savedAccount.getUpdatedAt();
 
             // when
-            savedAccount.changePassword(DEFAULT_NEW_PASSWORD);
+            savedAccount.changePassword(DEFAULT_NEW_PASSWORD, passwordEncoder);
             accountRepository.saveAndFlush(savedAccount);
             entityManager.clear();
 
             // then
             Account updatedAccount = accountRepository.findById(savedAccount.getAccountId()).orElseThrow();
             assertThat(updatedAccount.getUpdatedAt()).isNotEqualTo(initialUpdatedAt);
-            assertThat(updatedAccount.getPassword().getValue()).isEqualTo(DEFAULT_NEW_PASSWORD);
+            assertThat(passwordEncoder.matches(DEFAULT_NEW_PASSWORD, updatedAccount.getPassword().getValue())).isTrue();
         }
     }
 }

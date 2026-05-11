@@ -9,6 +9,7 @@ import com.marvin.boiler.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,8 @@ public class AccountService {
 
     private final AccountMapper accountMapper;
 
+    private final PasswordEncoder passwordEncoder;
+
 
     /**
      * 회원 가입
@@ -29,7 +32,8 @@ public class AccountService {
     @Transactional
     public AccountApiDto.CreateResponse createAccount(AccountApiDto.CreateRequest request) {
         log.debug("==================== createAccount Start!!");
-        Account createAccount = accountRepository.save(accountMapper.toEntity(request));
+        // 매퍼 호출 시 passwordEncoder를 @Context로 전달
+        Account createAccount = accountRepository.save(accountMapper.toEntity(request, passwordEncoder));
         return accountMapper.toCreateResponse(createAccount);
     }
 
@@ -86,18 +90,18 @@ public class AccountService {
         // 회원정보 조회
         Account account = this.findAccountById(accountId);
 
-        // [유효성 검증 1] - 현재 비밀번호(oldPassword)가 불일치하는지 먼저 체크 (보안 우선)
-        if (!account.getPassword().isSame(request.oldPassword())) {
+        // [유효성 검증 1] - 현재 비밀번호(oldPassword)가 불일치하는지 먼저 체크 (BCrypt matches 사용)
+        if (!account.getPassword().matches(request.oldPassword(), passwordEncoder)) {
             throw new BizException(ErrorCode.ACCOUNT_INVALID_PASSWORD);
         }
 
         // [유효성 검증 2] - 새 비밀번호(newPassword)가 이전 패스워드와 동일한지 체크
-        if (account.getPassword().isSame(request.newPassword())) {
+        if (account.getPassword().matches(request.newPassword(), passwordEncoder)) {
             throw new BizException(ErrorCode.ACCOUNT_SAME_AS_OLD_PASSWORD);
         }
 
-        // 회원 비밀번호 변경 (이 내부의 Password.of에서 규약 검증 수행)
-        account.changePassword(request.newPassword());
+        // 회원 비밀번호 변경 (엔티티 내부에서 암호화 수행)
+        account.changePassword(request.newPassword(), passwordEncoder);
     }
 
 

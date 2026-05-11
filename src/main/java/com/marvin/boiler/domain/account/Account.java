@@ -4,6 +4,7 @@ import com.marvin.boiler.domain.account.code.Status;
 import com.marvin.boiler.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 
 import java.util.Objects;
@@ -66,9 +67,9 @@ public class Account extends BaseTimeEntity {
         }
     }
 
-    public void changePassword(String newPassword) {
+    public void changePassword(String newPassword, PasswordEncoder passwordEncoder) {
         if (StringUtils.hasText(newPassword)) {
-            this.password = Password.of(newPassword);
+            this.password = Password.fromRaw(newPassword, passwordEncoder);
         }
     }
 }

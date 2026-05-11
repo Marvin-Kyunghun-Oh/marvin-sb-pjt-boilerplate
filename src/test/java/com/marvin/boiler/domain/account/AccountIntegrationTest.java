@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.marvin.boiler.domain.account.AccountFixture.DEFAULT_PASSWORD;
@@ -31,6 +32,9 @@ class AccountIntegrationTest {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Nested
     @DisplayName("비밀번호 변경 흐름")
     class ChangePasswordFlow {
@@ -38,9 +42,10 @@ class AccountIntegrationTest {
         @Test
         @DisplayName("성공: 모든 레이어를 거쳐 실제 DB의 비밀번호가 변경된다")
         void changePassword_full_flow_success() throws Exception {
-            // 1. Given: 실제 DB에 회원 저장
+            // 1. Given: 실제 DB에 회원 저장 (암호화된 비밀번호로 저장해야 matches를 통과함)
             Account account = AccountFixture.createAccountBuilder()
-                    .accountId(null) // 자동 생성을 위해 null
+                    .accountId(null)
+                    .password(Password.fromEncoded(passwordEncoder.encode(DEFAULT_PASSWORD)))
                     .build();
             Account savedAccount = accountRepository.saveAndFlush(account);
             Long accountId = savedAccount.getAccountId();
@@ -60,7 +65,7 @@ class AccountIntegrationTest {
             // 3. Then: 실제 DB를 다시 조회하여 값이 변경되었는지 최종 확인
             // 영속성 컨텍스트 초기화 효과를 위해 다시 조회
             Account updatedAccount = accountRepository.findById(accountId).orElseThrow();
-            assertThat(updatedAccount.getPassword().getValue()).isEqualTo(newPassword);
+            assertThat(passwordEncoder.matches(newPassword, updatedAccount.getPassword().getValue())).isTrue();
         }
 
         @Test

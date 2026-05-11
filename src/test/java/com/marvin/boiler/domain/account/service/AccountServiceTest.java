@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -34,6 +35,11 @@ class AccountServiceTest {
     @Mock
     private AccountRepository accountRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+
+
     @Nested
     @DisplayName("비밀번호 변경")
     class changePassword {
@@ -45,6 +51,7 @@ class AccountServiceTest {
             Long accountId = ACCOUNTID_1;
             String oldPassword = DEFAULT_PASSWORD; // 상수 활용
             String newPassword = "Password456@"; // 테스트 타겟 값은 리터럴로 명시
+            String encodeNewPassword = "encodePassword456@"; // Mock 시나리오:이렇게 인코드됐다고 친다.
             AccountApiDto.ChangePasswordRequest request =
                     new AccountApiDto.ChangePasswordRequest(oldPassword, newPassword, newPassword);
 
@@ -53,11 +60,21 @@ class AccountServiceTest {
             given(accountRepository.findById(accountId))
                     .willReturn(Optional.of(account));
 
+            // PasswordEncode ==> 이전 비밀번호 일치여부 체크
+            given(passwordEncoder.matches(eq(oldPassword), anyString()))
+                    .willReturn(true);
+            // PasswordEncode ==> 새로운 비밀번호 암호화
+            given(passwordEncoder.encode(newPassword))
+                    .willReturn(encodeNewPassword);
+
+
             // when
             accountService.changePassword(accountId, request);
 
             // then
-            assertThat(account.getPassword().getValue()).isEqualTo(newPassword);
+            assertThat(account.getPassword().getValue()).isEqualTo(encodeNewPassword);
+            verify(passwordEncoder, times(1)).matches(eq(oldPassword), anyString());
+            verify(passwordEncoder, times(1)).encode(newPassword);
             verify(accountRepository, times(1)).findById(accountId);
         }
 
@@ -104,6 +121,8 @@ class AccountServiceTest {
 
             given(accountRepository.findById(accountId))
                     .willReturn(Optional.of(account));
+            given(passwordEncoder.matches(eq(wrongOldPasswordInput), anyString()))
+                    .willReturn(false);
 
             // when
             Throwable throwable = catchThrowable(() ->
@@ -116,6 +135,7 @@ class AccountServiceTest {
                     .isEqualTo(ErrorCode.ACCOUNT_INVALID_PASSWORD);
 
             verify(accountRepository, times(1)).findById(accountId);
+            verify(passwordEncoder, times(1)).matches(eq(wrongOldPasswordInput), anyString());
         }
 
         @Test
@@ -133,6 +153,8 @@ class AccountServiceTest {
 
             given(accountRepository.findById(accountId))
                     .willReturn(Optional.of(account));
+            given(passwordEncoder.matches(eq(password), anyString()))
+                    .willReturn(true);
 
             // when
             Throwable throwable = catchThrowable(() ->
@@ -145,6 +167,7 @@ class AccountServiceTest {
                     .isEqualTo(ErrorCode.ACCOUNT_SAME_AS_OLD_PASSWORD);
 
             verify(accountRepository, times(1)).findById(accountId);
+            verify(passwordEncoder, times(2)).matches(eq(password), anyString());
         }
 
         @Test
@@ -161,6 +184,8 @@ class AccountServiceTest {
 
             given(accountRepository.findById(accountId))
                     .willReturn(Optional.of(account));
+            given(passwordEncoder.matches(eq(oldPassword), anyString()))
+                    .willReturn(true);
 
             // when
             Throwable throwable = catchThrowable(() ->
@@ -173,6 +198,7 @@ class AccountServiceTest {
                     .isEqualTo(ErrorCode.ACCOUNT_INVALID_NEWPASSWORD_PATTERN);
 
             verify(accountRepository, times(1)).findById(accountId);
+            verify(passwordEncoder, times(1)).matches(eq(oldPassword), anyString());
         }
 
     }
