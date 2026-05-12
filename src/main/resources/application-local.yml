@@ -38,7 +38,8 @@ spring:
   sql:
     init:
       schema-locations: classpath:init-data/schema.sql
-      data-locations: classpath:init-data/data.sql
+      #DataInitializer를 통해 초기데이터 생성
+      #data-locations: classpath:init-data/data.sql
       username: ENC(8TAZSwUHur1E+5876zY1sQ==)
       password: ENC(uuLWXjM6J0+HoDO2TgLExsFMjc88Pt7r)
       mode: always
