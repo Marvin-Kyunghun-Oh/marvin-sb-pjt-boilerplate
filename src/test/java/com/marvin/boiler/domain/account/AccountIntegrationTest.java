@@ -3,7 +3,7 @@ package com.marvin.boiler.domain.account;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marvin.boiler.domain.account.dto.AccountApiDto;
 import com.marvin.boiler.domain.account.repository.AccountRepository;
-import com.marvin.boiler.global.test.IntegrationTestConfig;
+import com.marvin.boiler.config.IntegrationTestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

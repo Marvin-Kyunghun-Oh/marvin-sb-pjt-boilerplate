@@ -2,7 +2,7 @@ package com.marvin.boiler.domain.account.repository;
 
 import com.marvin.boiler.domain.account.Account;
 import com.marvin.boiler.domain.account.AccountFixture;
-import com.marvin.boiler.global.test.DataJpaTestConfig;
+import com.marvin.boiler.config.DataJpaTestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

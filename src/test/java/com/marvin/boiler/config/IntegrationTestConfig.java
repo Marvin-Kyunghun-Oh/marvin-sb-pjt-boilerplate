@@ -1,4 +1,4 @@
-package com.marvin.boiler.global.test;
+package com.marvin.boiler.config;
 
 import com.marvin.boiler.config.SecurityConfig;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

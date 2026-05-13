@@ -1,4 +1,4 @@
-package com.marvin.boiler.global.test;
+package com.marvin.boiler.config;
 
 import com.marvin.boiler.config.JpaAuditConfig;
 import com.marvin.boiler.config.SecurityConfig;

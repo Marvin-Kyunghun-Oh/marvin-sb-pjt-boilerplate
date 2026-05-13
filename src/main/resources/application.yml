@@ -114,3 +114,9 @@ springdoc:
     path: /api-docs                  # OpenAPI Spec 경로
   cache:
     disabled: true                   # 개발 시 캐시 비활성화 (변경 즉시 반영)
+
+jwt:
+  # Access Token 만료 시간: 30분 (단위: ms)
+  access-token-expiration: 1800000
+  # Refresh Token 만료 시간: 7일 (단위: ms)
+  refresh-token-expiration: 604800000

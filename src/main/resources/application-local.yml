@@ -57,3 +57,7 @@ logging:
     org.hibernate.SQL: OFF
     org.hibernate.orm.jdbc.bind: OFF
     # 상세 로깅 설정은 log4j2-spring.xml에서 관리됩니다.
+
+jwt:
+  # HS256 알고리즘을 위한 Secret Key (최소 32자 이상의 Base64 문자열 권장)
+  secret: dce0ee05ce28a3204de6ccfddbe760364358adbd45d5a9945c270cb0bfcbeda0c0d3b8ab2726a1717e80146c7b1780d75ced2cb7b42f9709347152e5a0183308
