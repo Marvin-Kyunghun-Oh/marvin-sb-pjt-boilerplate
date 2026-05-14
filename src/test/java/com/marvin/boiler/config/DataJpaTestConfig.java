@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @DataJpaTest
-@Import({JpaAuditConfig.class, SecurityConfig.class}) // SecurityConfig를 포함하여 PasswordEncoder 빈 확보
+@Import({JpaAuditConfig.class, PasswordConfig.class}) // SecurityConfig 대신 PasswordConfig만 포함
 public @interface DataJpaTestConfig {
 
 }

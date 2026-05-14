@@ -3,6 +3,7 @@ package com.marvin.boiler.config;
 import com.marvin.boiler.config.LocaleConfig;
 import com.marvin.boiler.config.SecurityConfig;
 import com.marvin.boiler.global.dto.BaseResponseInterceptor;
+import com.marvin.boiler.global.security.TokenProvider;
 import com.marvin.boiler.global.utils.MessageUtils;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -18,8 +19,8 @@ import java.lang.annotation.*;
         MessageUtils.class,
         LocaleConfig.class,
         SecurityConfig.class,
+        PasswordConfig.class, // PasswordEncoder 빈 제공
         BaseResponseInterceptor.class // 인터셉터 추가
-
 }) // 공통으로 필요한 빈 설정
 public @interface WebMvcTestConfig {
 

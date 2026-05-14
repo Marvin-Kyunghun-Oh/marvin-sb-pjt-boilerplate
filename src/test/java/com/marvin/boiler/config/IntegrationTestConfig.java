@@ -16,6 +16,6 @@ import java.lang.annotation.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Transactional
-@Import({SecurityConfig.class})
+@Import({SecurityConfig.class, PasswordConfig.class})
 public @interface IntegrationTestConfig {
 }
