@@ -99,6 +99,13 @@ public class TokenProvider {
     }
 
     /**
+     * 엑세스토큰 만료 시간 조회
+     */
+    public Long getAccessTokenExpirationTime() {
+        return accessTokenExpirationTime;
+    }
+
+    /**
      * 토큰 유효성 및 서명 검증
      */
     public boolean validateToken(String token) {

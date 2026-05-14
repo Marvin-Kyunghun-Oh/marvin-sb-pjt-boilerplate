@@ -23,6 +23,9 @@ public enum ErrorCode {
     ACCOUNT_SAME_AS_OLD_PASSWORD("A004", HttpStatus.BAD_REQUEST, "error.account.same_as_old_password"),
     ACCOUNT_INVALID_PASSWORD("A005", HttpStatus.BAD_REQUEST, "error.account.invalid_password"),
 
+    // Auth (B)
+    AUTH_LOGIN_FAILED("B001", HttpStatus.BAD_REQUEST, "error.auth.login_failed"),
+
     // END ENUM
     TEST_ERROR("C999", HttpStatus.INTERNAL_SERVER_ERROR, "error.test");
 

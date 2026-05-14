@@ -41,9 +41,11 @@ public class SecurityConfig {
                         
                         // Swagger UI 및 OpenAPI 명세 관련 경로 허용
                         .requestMatchers(
+                                "/v3/api-docs",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html"
+                                "/swagger-ui.html",
+                                "/swagger-resources/**"
                         ).permitAll()
                         
                         // 공개 API (가입, 로그인 등)

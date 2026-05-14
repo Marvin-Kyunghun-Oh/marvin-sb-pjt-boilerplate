@@ -6,8 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class AccountFixture {
 
     public static final Long ACCOUNTID_1 = 1L;
-    public static final String DEFAULT_RAW_PASSWORD = "Password123!";
-    public static final String DEFAULT_PASSWORD = DEFAULT_RAW_PASSWORD;
+    public static final String DEFAULT_PASSWORD =  "Password123!";
     public static final String DEFAULT_EMAIL = "abc@naver.com";
 
     /**
@@ -19,7 +18,7 @@ public class AccountFixture {
                 .accountId(ACCOUNTID_1)
                 .email(DEFAULT_EMAIL)
                 .name("테스트")
-                .password(Password.of(DEFAULT_RAW_PASSWORD))
+                .password(Password.of(DEFAULT_PASSWORD))
                 .status(Status.ACTIVE)
                 .vipYn(false);
     }
@@ -33,7 +32,7 @@ public class AccountFixture {
                 .accountId(ACCOUNTID_1)
                 .email(DEFAULT_EMAIL)
                 .name("테스트")
-                .password(Password.fromRaw(DEFAULT_RAW_PASSWORD, encoder))
+                .password(Password.fromRaw(DEFAULT_PASSWORD, encoder))
                 .status(Status.ACTIVE)
                 .vipYn(false);
     }

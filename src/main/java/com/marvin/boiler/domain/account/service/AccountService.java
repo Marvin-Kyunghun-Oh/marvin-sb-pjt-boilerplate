@@ -19,9 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountService {
 
     private final AccountRepository accountRepository;
-
     private final AccountMapper accountMapper;
-
     private final PasswordEncoder passwordEncoder;
 
 
