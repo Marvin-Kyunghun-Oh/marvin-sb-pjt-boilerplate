@@ -1,8 +1,10 @@
 package com.marvin.boiler.global.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,8 +14,7 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
-
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TokenProviderTest {
 
@@ -65,25 +66,22 @@ public class TokenProviderTest {
     @DisplayName("실패: 잘못된 서명(Secret Key)으로 서명된 토큰은 유효성 검증에 실패한다.")
     void validateToken_InvalidSignature() {
         // given
-        // 다른 키로 서명된 가짜 토큰 생성
         SecretKey wrongKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode("d3Jvbmctc2VjcmV0LWtleS1mb3ItdGVzdGluZy1wdXJwb3Nlcy1vbmx5LW5vdC1mb3ItcHJvZA=="));
         String invalidToken = Jwts.builder()
                 .subject("user")
                 .signWith(wrongKey)
                 .compact();
 
-        // when
-        boolean isValid = tokenProvider.validateToken(invalidToken);
-
-        // then
-        assertThat(isValid).isFalse();
+        // when & then
+        assertThrows(SignatureException.class, () -> {
+            tokenProvider.validateToken(invalidToken);
+        });
     }
 
     @Test
     @DisplayName("실패: 만료된 토큰은 유효성 검증에 실패한다.")
     void validateToken_Expired() {
         // given
-        // 만료 시간을 과거로 설정하여 수동으로 토큰 생성 (TokenProvider 기능을 빌리지 않음)
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
         String expiredToken = Jwts.builder()
                 .subject("expired-user")
@@ -91,10 +89,9 @@ public class TokenProviderTest {
                 .signWith(key)
                 .compact();
 
-        // when
-        boolean isValid = tokenProvider.validateToken(expiredToken);
-
-        // then
-        assertThat(isValid).isFalse();
+        // when & then
+        assertThrows(ExpiredJwtException.class, () -> {
+            tokenProvider.validateToken(expiredToken);
+        });
     }
 }

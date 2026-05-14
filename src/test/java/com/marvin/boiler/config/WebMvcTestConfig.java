@@ -3,11 +3,14 @@ package com.marvin.boiler.config;
 import com.marvin.boiler.config.LocaleConfig;
 import com.marvin.boiler.config.SecurityConfig;
 import com.marvin.boiler.global.dto.BaseResponseInterceptor;
+import com.marvin.boiler.global.security.CustomAuthenticationEntryPoint;
 import com.marvin.boiler.global.security.TokenProvider;
 import com.marvin.boiler.global.utils.MessageUtils;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.lang.annotation.*;
 
@@ -37,6 +40,5 @@ public @interface WebMvcTestConfig {
      */
     @AliasFor(annotation = WebMvcTest.class, attribute = "controllers")
     Class<?>[] controllers() default {};
-
 
 }

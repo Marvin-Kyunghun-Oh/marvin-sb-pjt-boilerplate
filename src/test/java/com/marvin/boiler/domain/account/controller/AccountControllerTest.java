@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marvin.boiler.domain.account.dto.AccountApiDto;
 import com.marvin.boiler.domain.account.service.AccountService;
 import com.marvin.boiler.global.exception.ErrorCode;
+import com.marvin.boiler.global.security.CustomAccessDeniedHandler;
+import com.marvin.boiler.global.security.CustomAuthenticationEntryPoint;
 import com.marvin.boiler.global.security.TokenProvider;
 import com.marvin.boiler.config.WebMvcTestConfig;
 import org.junit.jupiter.api.DisplayName;
@@ -32,9 +34,16 @@ class AccountControllerTest {
     @MockitoBean
     private TokenProvider tokenProvider;
 
+    @MockitoBean
+    private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
+    @MockitoBean
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
+
     // 외부 의존성을 차단 (ApplicationContext을 Mock으로 교체)
     @MockitoBean
     private AccountService accountService;
+
 
     private static final String BASE_URL = "/accounts";
     private static final ErrorCode BASE_ERROR = ErrorCode.REQUEST_ARGUMENT_NOT_VALID;

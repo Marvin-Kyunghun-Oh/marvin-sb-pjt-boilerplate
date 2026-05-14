@@ -26,6 +26,10 @@ public enum ErrorCode {
     // Auth (B)
     AUTH_LOGIN_FAILED("B001", HttpStatus.BAD_REQUEST, "error.auth.login_failed"),
     AUTH_LOGIN_INVALID_STATUS("B002", HttpStatus.BAD_REQUEST, "error.auth.login_invalid_status"),
+    AUTH_TOKEN_EXPIRED("B003", HttpStatus.UNAUTHORIZED, "error.auth.token_expired"),
+    AUTH_TOKEN_INVALID("B004", HttpStatus.UNAUTHORIZED, "error.auth.token_invalid"),
+    AUTH_UNAUTHORIZED("B005", HttpStatus.UNAUTHORIZED, "error.auth.unauthorized"),
+    AUTH_FORBIDDEN("B006", HttpStatus.FORBIDDEN, "error.auth.forbidden"),
 
     // END ENUM
     TEST_ERROR("C999", HttpStatus.INTERNAL_SERVER_ERROR, "error.test");

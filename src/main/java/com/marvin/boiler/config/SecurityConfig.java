@@ -1,5 +1,7 @@
 package com.marvin.boiler.config;
 
+import com.marvin.boiler.global.security.CustomAccessDeniedHandler;
+import com.marvin.boiler.global.security.CustomAuthenticationEntryPoint;
 import com.marvin.boiler.global.security.JwtFilter;
 import com.marvin.boiler.global.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final TokenProvider tokenProvider;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -57,6 +61,12 @@ public class SecurityConfig {
 
                 // 5. JWT 필터 추가
                 .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
+
+                // 6. Filter 오류(인증/인가) 핸들러 등록
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(customAuthenticationEntryPoint) // 401 등록
+                        .accessDeniedHandler(customAccessDeniedHandler) // 403 등록
+                )
         ;
 
         return http.build();

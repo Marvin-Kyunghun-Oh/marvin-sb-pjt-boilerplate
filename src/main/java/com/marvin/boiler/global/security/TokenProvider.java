@@ -108,20 +108,10 @@ public class TokenProvider {
 
     /**
      * 토큰 유효성 및 서명 검증
+     * 전략 B(예외 위임)를 위해 예외를 던지도록 수정
      */
     public boolean validateToken(String token) {
-        try {
-            Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
-            return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.info("잘못된 JWT 서명입니다.");
-        } catch (ExpiredJwtException e) {
-            log.info("만료된 JWT 토큰입니다.");
-        } catch (UnsupportedJwtException e) {
-            log.info("지원되지 않는 JWT 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-            log.info("JWT 토큰이 잘못되었습니다.");
-        }
-        return false;
+        Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
+        return true;
     }
 }

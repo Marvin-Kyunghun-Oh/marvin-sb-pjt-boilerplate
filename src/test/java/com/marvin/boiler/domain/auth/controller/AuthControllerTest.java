@@ -5,6 +5,8 @@ import com.marvin.boiler.config.WebMvcTestConfig;
 import com.marvin.boiler.domain.auth.dto.AuthApiDto;
 import com.marvin.boiler.domain.auth.service.AuthService;
 import com.marvin.boiler.global.exception.ErrorCode;
+import com.marvin.boiler.global.security.CustomAccessDeniedHandler;
+import com.marvin.boiler.global.security.CustomAuthenticationEntryPoint;
 import com.marvin.boiler.global.security.TokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -35,6 +37,12 @@ public class AuthControllerTest {
 
     @MockitoBean
     private TokenProvider tokenProvider;
+
+    @MockitoBean
+    private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
+    @MockitoBean
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @MockitoBean
     private AuthService authService;
