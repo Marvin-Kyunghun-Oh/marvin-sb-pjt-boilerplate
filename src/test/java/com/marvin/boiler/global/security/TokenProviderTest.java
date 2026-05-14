@@ -35,7 +35,7 @@ public class TokenProviderTest {
     @DisplayName("성공: 유효한 인증 정보를 주면 엑세스 토큰을 생성한다.")
     void createAccessToken_Success() {
         // given
-        Authentication authentication = AuthFixture.createAuthentication();
+        Authentication authentication = TokenFixture.createAuthentication();
 
         // when
         String token = tokenProvider.createAccessToken(authentication);
@@ -50,7 +50,7 @@ public class TokenProviderTest {
     void getAuthentication_Success() {
         // given
         String email = "test@marvin.com";
-        Authentication auth = AuthFixture.createAuthentication(email, "ROLE_USER");
+        Authentication auth = TokenFixture.createAuthentication(email, "ROLE_USER");
         String token = tokenProvider.createAccessToken(auth);
 
         // when

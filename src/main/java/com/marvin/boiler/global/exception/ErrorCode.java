@@ -25,6 +25,7 @@ public enum ErrorCode {
 
     // Auth (B)
     AUTH_LOGIN_FAILED("B001", HttpStatus.BAD_REQUEST, "error.auth.login_failed"),
+    AUTH_LOGIN_INVALID_STATUS("B002", HttpStatus.BAD_REQUEST, "error.auth.login_invalid_status"),
 
     // END ENUM
     TEST_ERROR("C999", HttpStatus.INTERNAL_SERVER_ERROR, "error.test");

@@ -15,7 +15,7 @@ public class AuthApiDto {
 
     @Schema(description = "로그인 요청")
     public record LoginRequest(
-            @Schema(description = "이메일", example = "abc@naver.com")
+            @Schema(description = "이메일", example = "user1@gmail.com")
             @NotBlank(message = "{validation.email.not_blank}")
             @Email(message = "{validation.email.format}")
             String email,

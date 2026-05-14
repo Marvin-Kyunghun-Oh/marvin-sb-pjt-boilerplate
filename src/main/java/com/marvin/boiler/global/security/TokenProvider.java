@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 @Component
 public class TokenProvider {
 
+    public static final String BEARER_TYPE = "Bearer";
     private static final String AUTHORITIES_KEY = "auth";
 
     private final String secret;

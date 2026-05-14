@@ -41,6 +41,18 @@ public class AccountFixture {
         return createAccountBuilder().build();
     }
 
+    public static Account createSuspendedAccount() {
+        return createAccountBuilder()
+                .status(Status.SUSPENDED)
+                .build();
+    }
+
+    public static Account createDeletedAccount() {
+        return createAccountBuilder()
+                .status(Status.DELETED)
+                .build();
+    }
+
     public static Account createAccount(PasswordEncoder encoder) {
         return createEncodedAccountBuilder(encoder).build();
     }

@@ -1,6 +1,7 @@
 package com.marvin.boiler.domain.auth.service;
 
 import com.marvin.boiler.domain.account.Account;
+import com.marvin.boiler.domain.account.code.Status;
 import com.marvin.boiler.domain.account.repository.AccountRepository;
 import com.marvin.boiler.domain.auth.dto.AuthApiDto;
 import com.marvin.boiler.global.exception.BizException;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +40,10 @@ public class AuthService {
                 .filter(a -> a.getPassword().matches(request.password(), passwordEncoder))
                 .orElseThrow(() -> new BizException(ErrorCode.AUTH_LOGIN_FAILED));
 
-        // TODO : [유효성 검증] 회원 상태 체크
+        // [유효성 검증] '활성'상태의 회원만 로그인 가능
+        if (account.getStatus() != Status.ACTIVE) {
+            throw new BizException(ErrorCode.AUTH_LOGIN_INVALID_STATUS);
+        }
 
         // 토큰 발급
         Authentication authentication = getAuthenticationByAccount(account);
@@ -48,7 +53,7 @@ public class AuthService {
         // TODO : 토큰정보 DB에 넣기
 
         return new AuthApiDto.TokenResponse(
-                "Bearer",
+                TokenProvider.BEARER_TYPE,
                 accessToken,
                 refreshToken,
                 tokenProvider.getAccessTokenExpirationTime()
@@ -67,6 +72,6 @@ public class AuthService {
             authorities.add(new SimpleGrantedAuthority("ROLE_VIP"));
         }
 
-        return new UsernamePasswordAuthenticationToken(account.getEmail(), null, authorities);
+        return new UsernamePasswordAuthenticationToken(account.getAccountId().toString(), null, authorities);
     }
 }

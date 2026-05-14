@@ -49,7 +49,7 @@ public class SecurityConfig {
                         ).permitAll()
                         
                         // 공개 API (가입, 로그인 등)
-                        .requestMatchers("/accounts/**").permitAll() 
+                        .requestMatchers("/accounts/**", "/auth/**").permitAll()
                         
                         // 그 외 모든 요청은 인증 필요
                         .anyRequest().authenticated()

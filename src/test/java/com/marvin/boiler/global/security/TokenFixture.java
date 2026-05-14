@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AuthFixture {
+public class TokenFixture {
 
     public static final String DEFAULT_EMAIL = "admin@marvin.com";
     public static final String DEFAULT_ROLE = "ROLE_USER";
