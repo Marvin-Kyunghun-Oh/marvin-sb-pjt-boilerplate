@@ -1,8 +1,12 @@
 package com.marvin.boiler.domain.demo.controller;
 
+import com.marvin.boiler.domain.account.dto.AccountApiDto;
+import com.marvin.boiler.domain.account.service.AccountService;
 import com.marvin.boiler.global.dto.BaseResponse;
+import com.marvin.boiler.global.security.CurrentUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,10 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
  * - /demo/** 경로는 SecurityConfig에서 permitAll()에 등록되지 않았으므로 인증이 필수입니다.
  */
 @Tag(name = "Security Demo", description = "보안 기능 검증용 API")
-@Slf4j
 @RestController
 @RequestMapping("/demo")
+@RequiredArgsConstructor
+@Slf4j
 public class SecurityDemoController {
+
+    private final AccountService accountService;
 
     @Operation(summary = "인증 테스트 API", description = "유효한 토큰이 있어야 접근 가능합니다. (401 테스트용)")
     @GetMapping("/auth")
@@ -31,4 +38,20 @@ public class SecurityDemoController {
     public BaseResponse<String> vipTest() {
         return BaseResponse.ok("인가 성공: VIP 등급 혜택을 이용하실 수 있습니다.");
     }
-}
+
+    @Operation(summary = "SecurityContext API", description = "현재 로그인한 사용자ID를 알려주는 API")
+    @GetMapping("/me")
+    public BaseResponse<Long> me(@CurrentUser Long accountId) {
+        log.info("============== AccountId : {}", accountId);
+        return BaseResponse.ok(accountId);
+    }
+
+    @Operation(summary = "내 정보 조회 데모 API", description = "현재 로그인한 사용자의 정보를 조회합니다.")
+    @GetMapping("/my-info")
+    public BaseResponse<AccountApiDto.GetResponse> getMyInfo(@CurrentUser Long accountId) {
+        return BaseResponse.ok(accountService.getAccount(accountId));
+    }
+
+    }
+
+

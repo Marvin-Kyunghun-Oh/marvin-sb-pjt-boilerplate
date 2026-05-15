@@ -1,6 +1,9 @@
 package com.marvin.boiler.domain.demo.controller;
 
 import com.marvin.boiler.config.WebMvcTestConfig;
+import com.marvin.boiler.domain.account.code.Status;
+import com.marvin.boiler.domain.account.dto.AccountApiDto;
+import com.marvin.boiler.domain.account.service.AccountService;
 import com.marvin.boiler.global.exception.ErrorCode;
 import com.marvin.boiler.global.security.CustomAccessDeniedHandler;
 import com.marvin.boiler.global.security.CustomAuthenticationEntryPoint;
@@ -18,9 +21,10 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Collections;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,6 +42,9 @@ class SecurityDemoControllerTest {
 
     @MockitoBean
     private TokenProvider tokenProvider;
+
+    @MockitoBean
+    private AccountService accountService;
 
     private static final String VALID_TOKEN = "Bearer valid.token.here";
     private static final String INVALID_TOKEN = "Bearer invalid.token.here";
@@ -147,6 +154,61 @@ class SecurityDemoControllerTest {
                     .andDo(print())
                     .andExpect(status().isForbidden())
                     .andExpect(jsonPath("$.error.code").value(ErrorCode.AUTH_FORBIDDEN.getCode()));
+        }
+    }
+
+    @Nested
+    @DisplayName("인증 정보 주입 테스트 - @AuthenticationPrincipal -> @CurrentUser")
+    class CurrentUserTest {
+
+        @Test
+        @DisplayName("성공: 유효한 토큰으로 요청 시 현재 로그인한 사용자의 ID를 반환한다")
+        void get_me_success() throws Exception {
+            // given
+            String accountId = "1";
+            given(tokenProvider.validateToken(anyString())).willReturn(true);
+            given(tokenProvider.getAuthentication(anyString())).willReturn(
+                    new UsernamePasswordAuthenticationToken(
+                            new User(accountId, "", List.of(new SimpleGrantedAuthority("ROLE_USER"))),
+                            "",
+                            List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                    )
+            );
+
+            // when & then
+            mockMvc.perform(get("/demo/me")
+                            .header("Authorization", VALID_TOKEN))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data").value(Long.valueOf(accountId)));
+        }
+
+        @Test
+        @DisplayName("성공: /demo/my-info 호출 시 현재 사용자의 상세 정보를 반환한다")
+        void get_my_info_success() throws Exception {
+            // given
+            Long accountId = 1L;
+            AccountApiDto.GetResponse response = new AccountApiDto.GetResponse(
+                    accountId, "마빈", "marvin@test.com", Status.ACTIVE, false, LocalDateTime.now(), LocalDateTime.now()
+            );
+
+            given(tokenProvider.validateToken(anyString())).willReturn(true);
+            given(tokenProvider.getAuthentication(anyString())).willReturn(
+                    new UsernamePasswordAuthenticationToken(
+                            new User(accountId.toString(), "", List.of(new SimpleGrantedAuthority("ROLE_USER"))),
+                            "",
+                            List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                    )
+            );
+            given(accountService.getAccount(anyLong())).willReturn(response);
+
+            // when & then
+            mockMvc.perform(get("/demo/my-info")
+                            .header("Authorization", VALID_TOKEN))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.success").value(true))
+                    .andExpect(jsonPath("$.data.accountId").value(accountId))
+                    .andExpect(jsonPath("$.data.email").value("marvin@test.com"));
         }
     }
 }
