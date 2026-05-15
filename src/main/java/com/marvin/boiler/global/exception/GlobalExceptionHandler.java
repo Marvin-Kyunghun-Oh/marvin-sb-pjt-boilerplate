@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
@@ -19,6 +20,20 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 public class GlobalExceptionHandler {
 
     private final MessageUtils messageUtils;
+
+    /**
+     * 권한 거부 예외 처리 (403 Forbidden)
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<BaseResponse<?>> handleAccessDeniedException(AccessDeniedException e) {
+        log.warn("Access Denied: {}", e.getMessage());
+        ErrorCode errorCode = ErrorCode.AUTH_FORBIDDEN;
+        String message = messageUtils.getMessage(errorCode.getMessage());
+
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(BaseResponse.fail(errorCode, ExceptionDto.of(errorCode, message, null)));
+    }
 
     /**
      * Bean Validation (@Valid) 유효성 검증 실패
